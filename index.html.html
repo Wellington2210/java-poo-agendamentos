@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java & POO — Sistema de Agendamentos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#17181c;
+    --surface:#1e2027;
+    --surface-2:#262932;
+    --line: #33363f;
+    --brass:#d4a24c;
+    --brass-dim: #8a6c33;
+    --text:#e9e6de;
+    --text-dim:#9b9ca6;
+    --sage:#7fae8e;
+    --rust:#c06a52;
+    --blue:#7fa7c9;
+    --code-kw:#e0a952;
+    --code-str:#8fbf9f;
+    --code-type:#7fa7c9;
+    --code-com:#6b6e78;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    line-height:1.7;
+  }
+  ::selection{ background: var(--brass); color:#17181c; }
+
+  #progress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--brass); z-index:100; transition:width .1s linear;
+  }
+
+  .layout{
+    display:grid;
+    grid-template-columns: 268px 1fr;
+    min-height:100vh;
+  }
+
+  nav.sidebar{
+    position:sticky; top:0; height:100vh; overflow-y:auto;
+    border-right:1px solid var(--line);
+    background:var(--surface);
+    padding: 28px 0 40px;
+  }
+  .brand{ padding: 0 24px 20px; border-bottom:1px solid var(--line); margin-bottom: 10px; }
+  .brand .ticket{ font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.06em; color:var(--brass); }
+  .brand h1{ font-family:'Fraunces', serif; font-size: 21px; font-weight:600; margin: 6px 0 0; line-height:1.25; }
+  .group-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color: var(--brass-dim);
+    padding: 16px 24px 6px;
+  }
+  .navlist{ list-style:none; margin:0; padding:0 10px; }
+  .navlist a{
+    display:flex; gap:10px; align-items:baseline;
+    text-decoration:none; color: var(--text-dim);
+    padding: 6px 14px; border-radius: 6px; font-size: 13px;
+    transition: color .15s ease, background .15s ease;
+  }
+  .navlist a .num{ font-family:'JetBrains Mono', monospace; font-size: 11px; color: var(--brass-dim); min-width: 20px; }
+  .navlist a:hover{ background: var(--surface-2); color:var(--text); }
+  .navlist a.active{ background: var(--surface-2); color:var(--text); }
+  .navlist a.active .num{ color: var(--brass); }
+
+  main{ padding: 0; max-width: 100%; }
+  .hero{ padding: 72px 64px 56px; border-bottom:1px solid var(--line); position:relative; }
+  .hero .kicker{ font-family:'JetBrains Mono', monospace; color:var(--brass); font-size:12.5px; letter-spacing:.04em; }
+  .hero h1{ font-family:'Fraunces', serif; font-weight:700; font-size: clamp(34px, 4vw, 50px); line-height:1.1; margin: 14px 0 16px; max-width: 16ch; }
+  .hero p.lede{ max-width: 64ch; color: var(--text-dim); font-size: 17px; }
+
+  .pipeline{ display:flex; flex-wrap:wrap; gap:0; margin-top: 36px; border:1px solid var(--line); border-radius: 10px; overflow:hidden; }
+  .pipeline .step{ flex:1 1 auto; min-width: 100px; padding: 14px 14px; background: var(--surface); border-right:1px solid var(--line); font-family:'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); position:relative; }
+  .pipeline .step:last-child{ border-right:none; }
+  .pipeline .step b{ color:var(--text); font-weight:600; display:block; margin-bottom:2px;}
+  .pipeline .step::after{ content:"→"; position:absolute; right:-2px; top:50%; transform:translate(50%,-50%); color: var(--brass); font-size:13px; z-index:2; }
+  .pipeline .step:last-child::after{ content:none; }
+
+  .part-header{
+    padding: 40px 64px 0;
+    max-width: 880px;
+  }
+  .part-header .part-num{
+    font-family:'JetBrains Mono', monospace;
+    color: var(--brass);
+    font-size: 13px;
+  }
+  .part-header h1{
+    font-family:'Fraunces', serif;
+    font-size: 34px;
+    font-weight:700;
+    margin: 8px 0 6px;
+  }
+  .part-header p{ color:var(--text-dim); max-width: 62ch; }
+
+  section.topic{ padding: 46px 64px; border-bottom:1px solid var(--line); max-width: 880px; }
+  section.topic.part-open{ border-top: 1px solid var(--line); margin-top: 20px; padding-top: 50px; }
+  section.topic .eyebrow{ font-family:'JetBrains Mono', monospace; color:var(--brass-dim); font-size:12px; }
+  section.topic h2{ font-family:'Fraunces', serif; font-size: 27px; font-weight:600; margin: 6px 0 18px; }
+  section.topic h3{ font-family:'Inter', sans-serif; font-size: 15px; font-weight:600; color: var(--brass); margin: 28px 0 10px; }
+  section.topic p{ color:var(--text); max-width:68ch; }
+  section.topic p.sub{ color: var(--text-dim); }
+  section.topic ul, section.topic ol{ color:var(--text); max-width:66ch; padding-left: 20px; }
+  section.topic li{ margin-bottom: 6px; }
+
+  .code{ background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; margin: 18px 0; overflow-x:auto; font-family:'JetBrains Mono', monospace; font-size: 13.5px; line-height:1.75; white-space:pre; color: var(--text); }
+  .code .c-kw{ color: var(--code-kw); }
+  .code .c-type{ color: var(--code-type); }
+  .code .c-str{ color: var(--code-str); }
+  .code .c-com{ color: var(--code-com); font-style:italic; }
+
+  .flow{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin: 18px 0; font-family:'JetBrains Mono', monospace; font-size: 13px; }
+  .flow .box{ background: var(--surface-2); border:1px solid var(--line); border-radius:8px; padding: 8px 14px; color: var(--text); }
+  .flow .arrow{ color: var(--brass); font-size: 15px; }
+
+  .diagram{ border:1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 20px 24px; margin: 18px 0; font-family:'JetBrains Mono', monospace; font-size: 13px; color: var(--text-dim); overflow-x:auto; }
+  .diagram .root{ color: var(--text); font-weight:600; }
+  .diagram .item{ padding-left: 18px; }
+
+  .note{ border-left: 3px solid var(--brass); background: var(--surface); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 14.5px; color: var(--text-dim); }
+  .note b{ color: var(--text); }
+
+  .analogy{ border: 1px dashed var(--brass-dim); background: rgba(212,162,76,0.06); padding: 16px 20px; border-radius: 10px; margin: 20px 0; font-size: 14.5px; color: var(--text); }
+  .analogy .lbl{ font-family:'JetBrains Mono', monospace; font-size: 11px; color: var(--brass); letter-spacing:.04em; display:block; margin-bottom: 8px; }
+
+  .breakdown{ margin: 14px 0 22px; border-radius: 10px; overflow:hidden; border:1px solid var(--line); }
+  .breakdown-row{ display:grid; grid-template-columns: minmax(140px, 240px) 1fr; border-top: 1px solid var(--line); }
+  .breakdown-row:first-child{ border-top:none; }
+  .breakdown-row .piece{ background: var(--surface-2); font-family:'JetBrains Mono', monospace; font-size: 13px; padding: 10px 14px; color: var(--brass); display:flex; align-items:center; }
+  .breakdown-row .expl{ background: var(--surface); padding: 10px 16px; font-size: 13.5px; color: var(--text-dim); display:flex; align-items:center; }
+
+  .compare{ display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  @media (max-width: 700px){ .compare{ grid-template-columns: 1fr; } .breakdown-row{ grid-template-columns: 1fr; } }
+  .compare .col{ border:1px solid var(--line); border-radius: 10px; padding: 16px 18px; background: var(--surface); }
+  .compare .col h4{ margin:0 0 10px; font-family:'JetBrains Mono', monospace; font-size: 12.5px; color: var(--brass); font-weight:600; }
+
+  .check{ margin: 22px 0; border:1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 4px; }
+  .check summary{ cursor:pointer; list-style:none; padding: 14px 18px; font-size: 14.5px; color: var(--text); display:flex; justify-content:space-between; align-items:center; gap: 12px; }
+  .check summary::-webkit-details-marker{ display:none; }
+  .check summary .tag{ font-family:'JetBrains Mono', monospace; font-size: 11px; color: var(--brass); border:1px solid var(--brass-dim); padding: 2px 8px; border-radius: 20px; flex-shrink:0; }
+  .check .answer{ padding: 0 18px 16px; color: var(--text-dim); font-size: 14px; border-top: 1px solid var(--line); margin-top: 4px; padding-top: 12px; }
+
+  .pillars{ display:grid; grid-template-columns: repeat(2, 1fr); gap:14px; margin:20px 0; }
+  @media (max-width:700px){ .pillars{ grid-template-columns:1fr; } }
+  .pillar{ border:1px solid var(--line); border-radius:10px; background:var(--surface); padding:16px 18px; }
+  .pillar .t{ font-family:'JetBrains Mono', monospace; color:var(--brass); font-size:12.5px; font-weight:600; margin-bottom:6px; }
+  .pillar .d{ color:var(--text-dim); font-size:13.5px; }
+
+  .roadmap{ list-style:none; padding:0; margin: 18px 0; display:grid; gap:8px; }
+  .roadmap li{ border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:10px 16px; font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--text); display:flex; align-items:center; gap:10px; }
+  .roadmap li .n{ color:var(--brass); }
+
+  .checklist{ display:grid; grid-template-columns: repeat(2,1fr); gap:6px 18px; list-style:none; padding:0; margin: 18px 0; }
+  @media (max-width:700px){ .checklist{ grid-template-columns:1fr; } }
+  .checklist li{ font-size:13.5px; color:var(--text-dim); display:flex; gap:8px; align-items:baseline; }
+  .checklist li::before{ content:"✓"; color: var(--sage); font-family:'JetBrains Mono', monospace; }
+
+  .glossary{ border:1px solid var(--line); border-radius: 10px; overflow:hidden; margin: 18px 0; }
+  .gterm{ display:grid; grid-template-columns: 190px 1fr; border-top:1px solid var(--line); }
+  .gterm:first-child{ border-top:none; }
+  .gterm dt{ background: var(--surface-2); font-family:'JetBrains Mono', monospace; font-weight:600; color: var(--brass); padding: 12px 16px; font-size: 13px; }
+  .gterm dd{ margin:0; background: var(--surface); padding: 12px 16px; font-size: 13.5px; color: var(--text-dim); }
+  @media (max-width: 700px){ .gterm{ grid-template-columns: 1fr; } }
+
+  footer{ padding: 48px 64px 80px; color: var(--text-dim); font-size: 13.5px; }
+
+  @media (max-width: 880px){
+    .layout{ grid-template-columns: 1fr; }
+    nav.sidebar{ display:none; }
+    .hero, section.topic, .part-header, footer{ padding-left: 24px; padding-right: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="brand">
+      <div class="ticket">FICHA Nº 001</div>
+      <h1>Java & POO<br>Agendamentos</h1>
+    </div>
+    <ul class="navlist" id="navlist">
+      <li><a href="#topic-0"><span class="num">·</span> O que é POO</a></li>
+    </ul>
+    <div class="group-label">Fundamentos</div>
+    <ul class="navlist">
+      <li><a href="#topic-1"><span class="num">01</span> Classe</a></li>
+      <li><a href="#topic-2"><span class="num">02</span> Objeto</a></li>
+      <li><a href="#topic-3"><span class="num">03</span> Atributos e métodos</a></li>
+      <li><a href="#topic-4"><span class="num">04</span> Parâmetros</a></li>
+      <li><a href="#topic-5"><span class="num">05</span> this</a></li>
+    </ul>
+    <div class="group-label">Encapsulamento</div>
+    <ul class="navlist">
+      <li><a href="#topic-6"><span class="num">06</span> public / private</a></li>
+      <li><a href="#topic-7"><span class="num">07</span> Getter e setter</a></li>
+      <li><a href="#topic-8"><span class="num">08</span> Encapsulamento</a></li>
+      <li><a href="#topic-9"><span class="num">09</span> Nem tudo precisa de setter</a></li>
+    </ul>
+    <div class="group-label">Construtores</div>
+    <ul class="navlist">
+      <li><a href="#topic-10"><span class="num">10</span> Construtor</a></li>
+      <li><a href="#topic-11"><span class="num">11</span> Construtor × método</a></li>
+      <li><a href="#topic-12"><span class="num">12</span> Construtor padrão</a></li>
+      <li><a href="#topic-13"><span class="num">13</span> Sobrecarga</a></li>
+      <li><a href="#topic-14"><span class="num">14</span> Mudança de estado</a></li>
+    </ul>
+    <div class="group-label">Herança</div>
+    <ul class="navlist">
+      <li><a href="#topic-15"><span class="num">15</span> "É UM" e extends</a></li>
+      <li><a href="#topic-16"><span class="num">16</span> super</a></li>
+      <li><a href="#topic-17"><span class="num">17</span> Métodos herdados</a></li>
+    </ul>
+    <div class="group-label">Polimorfismo</div>
+    <ul class="navlist">
+      <li><a href="#topic-18"><span class="num">18</span> Polimorfismo</a></li>
+      <li><a href="#topic-19"><span class="num">19</span> Sobrescrita e @Override</a></li>
+      <li><a href="#topic-20"><span class="num">20</span> Sobrecarga × sobrescrita</a></li>
+    </ul>
+    <div class="group-label">Abstração</div>
+    <ul class="navlist">
+      <li><a href="#topic-21"><span class="num">21</span> Classe abstrata</a></li>
+      <li><a href="#topic-22"><span class="num">22</span> Método abstrato</a></li>
+      <li><a href="#topic-23"><span class="num">23</span> Os quatro pilares</a></li>
+    </ul>
+    <div class="group-label">Associação</div>
+    <ul class="navlist">
+      <li><a href="#topic-24"><span class="num">24</span> "TEM UM"</a></li>
+      <li><a href="#topic-25"><span class="num">25</span> Classes como tipos</a></li>
+      <li><a href="#topic-26"><span class="num">26</span> Referência, não cópia</a></li>
+      <li><a href="#topic-27"><span class="num">27</span> Encadeamento</a></li>
+      <li><a href="#topic-28"><span class="num">28</span> Por que não usar setters</a></li>
+    </ul>
+    <div class="group-label">O projeto até aqui</div>
+    <ul class="navlist">
+      <li><a href="#topic-29"><span class="num">29</span> Modelagem completa</a></li>
+      <li><a href="#topic-30"><span class="num">30</span> Próximos assuntos</a></li>
+      <li><a href="#glossario"><span class="num">·</span> Glossário</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="kicker">REVISÃO DE JAVA E POO — PARA QUEM NUNCA VIU ISSO</div>
+      <h1>Construindo o sistema de agendamentos da barbearia</h1>
+      <p class="lede">Se você nunca programou orientado a objetos, comece pela seção 0. O material vai crescendo do básico (classe, objeto) até os quatro pilares da POO e a modelagem completa do projeto: Pessoa, Cliente, Profissional, Serviço e Agendamento.</p>
+      <div class="pipeline">
+        <div class="step"><b>Java</b>linguagem</div>
+        <div class="step"><b>POO</b>modelagem</div>
+        <div class="step"><b>Sistema em memória</b>lógica</div>
+        <div class="step"><b>HTTP / REST</b>comunicação</div>
+        <div class="step"><b>Spring Boot</b>framework</div>
+        <div class="step"><b>Banco de dados</b>persistência</div>
+        <div class="step"><b>React</b>interface</div>
+        <div class="step"><b>Projeto completo</b>entrega</div>
+      </div>
+    </div>
+
+    <!-- 0 -->
+    <section class="topic" id="topic-0">
+      <div class="eyebrow">antes de tudo</div>
+      <h2>O que é, afinal, "orientação a objetos"?</h2>
+      <p>Imagine a barbearia funcionando só no papel. Toda vez que um cliente marca um horário, o dono pega uma <strong>ficha em branco</strong> e preenche: nome do cliente, serviço, data, horário. Cada cliente novo ganha uma ficha nova — as fichas não se misturam.</p>
+      <p>Programação orientada a objetos (POO) é exatamente essa ideia dentro do computador: a <strong>ficha em branco</strong> (o modelo que diz quais campos existem) é uma <strong>classe</strong>; cada <strong>ficha preenchida</strong> é um <strong>objeto</strong>.</p>
+      <div class="analogy">
+        <span class="lbl">POR QUE ISSO IMPORTA</span>
+        Sem POO, o código viraria uma bagunça de variáveis soltas (<code>nomeCliente1</code>, <code>nomeCliente2</code>...). A classe agrupa tudo que pertence a "um agendamento" num único lugar, e cada objeto é uma cópia independente dessa estrutura.
+      </div>
+    </section>
+
+    <!-- PARTE FUNDAMENTOS -->
+    <div class="part-header">
+      <div class="part-num">PARTE 1</div>
+      <h1>Fundamentos</h1>
+      <p>Classe, objeto, atributos, métodos, parâmetros e o <code>this</code> — o vocabulário básico que aparece em praticamente toda linha de código Java orientado a objetos.</p>
+    </div>
+
+    <!-- 1 CLASSE -->
+    <section class="topic part-open" id="topic-1">
+      <div class="eyebrow">01 · fundamentos</div>
+      <h2>Classe</h2>
+      <p>Uma classe é o <strong>molde</strong> usado para criar objetos. Ela só descreve <em>quais informações</em> um objeto vai ter — sozinha, ela não representa nada concreto ainda.</p>
+      <div class="analogy">
+        <span class="lbl">PENSE ASSIM</span>
+        A classe é a ficha impressa em branco, com os campos "Nome: ____", "Preço: ____". Ninguém preencheu nada ainda — é só o formulário.
+      </div>
+<div class="code"><span class="c-kw">public class</span> <span class="c-type">Servico</span> {
+
+    <span class="c-kw">private</span> <span class="c-type">String</span> nome;
+    <span class="c-kw">private</span> <span class="c-kw">double</span> preco;
+}</div>
+      <div class="diagram">
+<span class="root">Servico</span>
+<span class="item">├── nome</span>
+<span class="item">└── preco</span>
+      </div>
+      <p class="sub">A classe define quais informações e comportamentos os objetos desse tipo poderão ter — o preenchimento vem depois.</p>
+    </section>
+
+    <!-- 2 OBJETO -->
+    <section class="topic" id="topic-2">
+      <div class="eyebrow">02 · fundamentos</div>
+      <h2>Objeto</h2>
+      <p>O objeto é uma <strong>ficha preenchida</strong>, criada a partir da classe com a palavra <code>new</code>. Cada <code>new</code> reserva um espaço novo na memória — um objeto totalmente independente dos demais.</p>
+<div class="code"><span class="c-type">Servico</span> servico = <span class="c-kw">new</span> <span class="c-type">Servico</span>(<span class="c-str">"Corte"</span>, 40);</div>
+      <div class="breakdown">
+        <div class="breakdown-row"><div class="piece">Servico</div><div class="expl">o <em>tipo</em> — diz que a variável vai guardar um objeto desse molde.</div></div>
+        <div class="breakdown-row"><div class="piece">servico</div><div class="expl">o nome que demos à variável — um "rótulo" que aponta para o objeto criado.</div></div>
+        <div class="breakdown-row"><div class="piece">new Servico(...)</div><div class="expl">o comando que efetivamente cria o objeto na memória.</div></div>
+      </div>
+      <div class="note"><b>O ponto mais importante:</b> se você criar dois objetos a partir da mesma classe, cada um vive de forma separada — alterar um não afeta o outro.</div>
+<div class="code"><span class="c-type">Servico</span> servico1 = <span class="c-kw">new</span> <span class="c-type">Servico</span>(<span class="c-str">"Corte"</span>, 40);
+<span class="c-type">Servico</span> servico2 = <span class="c-kw">new</span> <span class="c-type">Servico</span>(<span class="c-str">"Barba"</span>, 30);</div>
+      <div class="flow">
+        <div class="box">servico1 → objeto A (Corte, R$40)</div>
+        <div class="box">servico2 → objeto B (Barba, R$30)</div>
+      </div>
+      <details class="check">
+        <summary>Se você mudar o preço de <code>servico1</code>, o que acontece com <code>servico2</code>? <span class="tag">testar</span></summary>
+        <div class="answer">Nada. São objetos diferentes, cada um com sua própria cópia dos atributos — mudar um não tem qualquer efeito sobre o outro, mesmo vindo da mesma classe.</div>
+      </details>
+    </section>
+
+    <!-- 3 ATRIBUTOS E METODOS -->
+    <section class="topic" id="topic-3">
+      <div class="eyebrow">03 · fundamentos</div>
+      <h2>Atributos e métodos</h2>
+      <p>Atributos são os <strong>dados</strong> guardados dentro de um objeto — o que ele <strong>tem</strong>. Métodos são as ações que o objeto sabe executar — o que ele <strong>faz</strong>.</p>
+<div class="code"><span class="c-kw">private</span> <span class="c-type">String</span> nome;
+<span class="c-kw">private</span> <span class="c-kw">double</span> preco;
+<span class="c-com">// nome  = "Corte"
+// preco = 40.00</span></div>
+<div class="code"><span class="c-kw">public void</span> reagendar(<span class="c-type">String</span> novoHorario) {
+    <span class="c-kw">this</span>.horario = novoHorario;
+}</div>
+      <div class="compare">
+        <div class="col">
+          <h4>TEM (atributos)</h4>
+          cliente<br>profissional<br>serviço<br>data<br>horário
+        </div>
+        <div class="col">
+          <h4>FAZ (métodos)</h4>
+          reagendar()<br>cancelar()<br>confirmar()
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 PARAMETROS -->
+    <section class="topic" id="topic-4">
+      <div class="eyebrow">04 · fundamentos</div>
+      <h2>Parâmetros</h2>
+      <p>Um método (ou um construtor, como veremos mais à frente) pode receber informações de fora através de um <strong>parâmetro</strong> — uma variável temporária que só existe durante a execução daquele bloco.</p>
+<div class="code"><span class="c-kw">public void</span> reagendar(<span class="c-type">String</span> novoHorario) {
+    <span class="c-kw">this</span>.horario = novoHorario;
+}
+<span class="c-com">// uso:</span>
+agendamento.reagendar(<span class="c-str">"14:30"</span>);</div>
+      <div class="flow">
+        <div class="box">"14:30"</div>
+        <div class="arrow">→</div>
+        <div class="box">novoHorario</div>
+        <div class="arrow">→</div>
+        <div class="box">this.horario</div>
+      </div>
+    </section>
+
+    <!-- 5 THIS -->
+    <section class="topic" id="topic-5">
+      <div class="eyebrow">05 · fundamentos</div>
+      <h2>this</h2>
+      <p><code>this</code> representa o <strong>objeto atual</strong>. Ele existe principalmente para diferenciar o atributo do objeto de um parâmetro que tenha o mesmo nome.</p>
+<div class="code"><span class="c-kw">this</span>.nome = nome;
+<span class="c-com">//   ↑          ↑
+// atributo   parâmetro</span></div>
+      <h3>this é sempre obrigatório?</h3>
+      <p>Não. Em um getter simples, sem nenhum parâmetro de mesmo nome por perto, o Java não fica em dúvida — então tanto faz escrever com ou sem <code>this</code>:</p>
+<div class="code"><span class="c-kw">public</span> <span class="c-type">String</span> getHorario() {
+    <span class="c-kw">return</span> horario;
+}
+<span class="c-com">// funciona igual a:</span>
+<span class="c-kw">public</span> <span class="c-type">String</span> getHorario() {
+    <span class="c-kw">return</span> <span class="c-kw">this</span>.horario;
+}</div>
+      <p>Já no construtor, onde o parâmetro costuma ter <em>o mesmo nome</em> do atributo, o <code>this</code> deixa de ser opcional:</p>
+<div class="code"><span class="c-kw">public</span> <span class="c-type">Agendamento</span>(<span class="c-type">String</span> horario) {
+    <span class="c-kw">this</span>.horario = horario;
+}</div>
+      <details class="check">
+        <summary>Por que o <code>this</code> não faz diferença no getter, mas faz diferença no construtor? <span class="tag">testar</span></summary>
+        <div class="answer">No getter não existe nenhum parâmetro chamado <code>horario</code> — só o atributo. Sem ambiguidade, o Java entende <code>horario</code> sozinho como o atributo. Já no construtor existem dois <code>horario</code> ao mesmo tempo (o parâmetro e o atributo), e é o <code>this.</code> que aponta explicitamente para o atributo do objeto.</div>
+      </details>
+    </section>
+
+    <!-- PARTE ENCAPSULAMENTO -->
+    <div class="part-header">
+      <div class="part-num">PARTE 2</div>
+      <h1>Encapsulamento</h1>
+      <p>O primeiro dos quatro pilares da POO: o objeto protege seu estado interno e decide como ele pode ser lido ou alterado.</p>
+    </div>
+
+    <!-- 6 PUBLIC/PRIVATE -->
+    <section class="topic part-open" id="topic-6">
+      <div class="eyebrow">06 · encapsulamento</div>
+      <h2>public e private</h2>
+      <p>São modificadores de acesso. <code>public</code> pode ser acessado de qualquer lugar do programa. <code>private</code> só pode ser acessado diretamente dentro da própria classe.</p>
+      <div class="analogy">
+        <span class="lbl">PENSE ASSIM</span>
+        <code>public</code> é deixar a ficha em cima do balcão — qualquer funcionário mexe. <code>private</code> é guardar numa gaveta trancada — só a própria recepção (a própria classe) tem a chave.
+      </div>
+<div class="code"><span class="c-kw">private</span> <span class="c-type">String</span> nome;
+<span class="c-com">// em outra classe, isto não funciona:</span>
+cliente.nome = <span class="c-str">"João"</span>;</div>
+    </section>
+
+    <!-- 7 GETTER/SETTER -->
+    <section class="topic" id="topic-7">
+      <div class="eyebrow">07 · encapsulamento</div>
+      <h2>Getter e setter</h2>
+      <p>Se um atributo é <code>private</code>, o getter é a porta de saída (para ler o valor) e o setter é a porta de entrada (para alterá-lo) — os dois na forma de métodos públicos.</p>
+<div class="code"><span class="c-kw">public</span> <span class="c-type">String</span> getNome() {
+    <span class="c-kw">return</span> <span class="c-kw">this</span>.nome;
+}
+
+<span class="c-kw">public void</span> setNome(<span class="c-type">String</span> nome) {
+    <span class="c-kw">this</span>.nome = nome;
+}
+<span class="c-com">// uso:</span>
+cliente.getNome();
+cliente.setNome(<span class="c-str">"João"</span>);</div>
+      <p class="sub">Mas não somos obrigados a criar um setter para todo atributo — isso fica mais claro nas próximas duas seções.</p>
+    </section>
+
+    <!-- 8 ENCAPSULAMENTO -->
+    <section class="topic" id="topic-8">
+      <div class="eyebrow">08 · encapsulamento</div>
+      <h2>Encapsulamento</h2>
+      <p>Encapsulamento significa <strong>proteger e controlar o estado interno do objeto</strong>. Em vez de deixar qualquer parte do programa alterar um atributo livremente...</p>
+<div class="code">agendamento.horario = <span class="c-str">"14:30"</span>;
+<span class="c-com">// direto assim, sem nenhuma verificação</span></div>
+      <p>...criamos uma operação com nome e com regras:</p>
+<div class="code"><span class="c-kw">public void</span> reagendar(<span class="c-type">String</span> novoHorario) {
+
+    <span class="c-kw">if</span> (novoHorario == <span class="c-kw">null</span>) {
+        <span class="c-kw">return</span>;
+    }
+
+    <span class="c-kw">this</span>.horario = novoHorario;
+}</div>
+      <p>Esse pequeno <code>if</code> já é uma regra de negócio. No futuro, esse mesmo método pode crescer com mais verificações sem que o resto do sistema precise mudar.</p>
+    </section>
+
+    <!-- 9 NEM TUDO SETTER -->
+    <section class="topic" id="topic-9">
+      <div class="eyebrow">09 · encapsulamento</div>
+      <h2>Por que nem tudo precisa de setter?</h2>
+      <p>Poderíamos ter criado <code>setHorario(...)</code>. Mas no nosso sistema faz mais sentido ter <code>reagendar(...)</code>, porque esse nome representa uma <strong>operação real do negócio</strong> — e não apenas uma troca crua de valor.</p>
+<div class="code"><span class="c-kw">public void</span> reagendar(<span class="c-type">String</span> novoHorario) {
+
+    <span class="c-com">// verificar se está cancelado
+    // verificar disponibilidade
+    // verificar data</span>
+
+    <span class="c-kw">this</span>.horario = novoHorario;
+}</div>
+      <div class="note">
+        <b>A ideia geral fica assim:</b><br>
+        Construtor → cria o estado inicial.<br>
+        Getter → permite consultar.<br>
+        Método específico (como <code>reagendar</code>) → altera seguindo regras.
+      </div>
+      <details class="check">
+        <summary>Por que não deixar <code>agendamento.horario = "14:30"</code> direto, se no fim o valor é o mesmo? <span class="tag">testar</span></summary>
+        <div class="answer">Porque, alterando direto, nenhuma regra de negócio seria aplicada — qualquer parte do sistema poderia gravar um horário inválido ou de um agendamento já cancelado. Passando por <code>reagendar()</code>, a própria classe garante que essas verificações aconteçam sempre.</div>
+      </details>
+    </section>
+
+    <!-- PARTE CONSTRUTORES -->
+    <div class="part-header">
+      <div class="part-num">PARTE 3</div>
+      <h1>Construtores</h1>
+      <p>Como um objeto nasce já pronto, com que regras isso funciona, e o que acontece quando um objeto muda depois de criado.</p>
+    </div>
+
+    <!-- 10 CONSTRUTOR -->
+    <section class="topic part-open" id="topic-10">
+      <div class="eyebrow">10 · construtores</div>
+      <h2>Construtor</h2>
+      <p>O construtor inicializa o objeto — ele nasce já com os dados corretos.</p>
+<div class="code"><span class="c-kw">public</span> <span class="c-type">Servico</span>(<span class="c-type">String</span> nome, <span class="c-kw">double</span> preco) {
+    <span class="c-kw">this</span>.nome = nome;
+    <span class="c-kw">this</span>.preco = preco;
+}
+<span class="c-com">// uso:</span>
+<span class="c-type">Servico</span> servico = <span class="c-kw">new</span> <span class="c-type">Servico</span>(<span class="c-str">"Corte"</span>, 40);</div>
+      <div class="flow">
+        <div class="box">new Servico(...)</div>
+        <div class="arrow">→</div>
+        <div class="box">construtor</div>
+        <div class="arrow">→</div>
+        <div class="box">nome = "Corte", preco = 40</div>
+      </div>
+    </section>
+
+    <!-- 11 CONSTRUTOR X METODO -->
+    <section class="topic" id="topic-11">
+      <div class="eyebrow">11 · construtores</div>
+      <h2>Construtor não é um método comum</h2>
+      <div class="compare">
+        <div class="col">
+          <h4>Método</h4>
+<div class="code" style="margin:0;"><span class="c-kw">public void</span> reagendar(<span class="c-type">String</span> h) {
+}
+<span class="c-com">// tem retorno (void)</span></div>
+        </div>
+        <div class="col">
+          <h4>Construtor</h4>
+<div class="code" style="margin:0;"><span class="c-kw">public</span> <span class="c-type">Agendamento</span>(...) {
+}
+<span class="c-com">// sem tipo de retorno</span></div>
+        </div>
+      </div>
+      <p class="sub">O construtor não possui tipo de retorno, e possui exatamente o mesmo nome da classe.</p>
+    </section>
+
+    <!-- 12 CONSTRUTOR PADRAO -->
+    <section class="topic" id="topic-12">
+      <div class="eyebrow">12 · construtores</div>
+      <h2>Construtor padrão</h2>
+      <p>Se nenhum construtor for escrito, o Java fornece implicitamente um construtor vazio equivalente a:</p>
+<div class="code"><span class="c-kw">public</span> <span class="c-type">Cliente</span>() {
+}</div>
+      <div class="note"><b>Pegadinha comum:</b> assim que você escreve manualmente um construtor com parâmetros, o Java deixa de fornecer o construtor vazio automaticamente.</div>
+<div class="code"><span class="c-kw">public</span> <span class="c-type">Cliente</span>(<span class="c-type">String</span> nome) {
+}
+<span class="c-com">// agora new Cliente() sem argumentos dá erro,
+// a não ser que você declare os dois construtores</span></div>
+    </section>
+
+    <!-- 13 SOBRECARGA -->
+    <section class="topic" id="topic-13">
+      <div class="eyebrow">13 · construtores</div>
+      <h2>Sobrecarga</h2>
+      <p>Métodos ou construtores podem ter o mesmo nome, desde que os parâmetros sejam diferentes. O Java escolhe qual usar pelos argumentos fornecidos.</p>
+<div class="code"><span class="c-kw">public</span> <span class="c-type">Agendamento</span>() { }
+<span class="c-kw">public</span> <span class="c-type">Agendamento</span>(<span class="c-type">String</span> horario) { }
+<span class="c-kw">public</span> <span class="c-type">Agendamento</span>(<span class="c-type">String</span> data, <span class="c-type">String</span> horario) { }</div>
+    </section>
+
+    <!-- 14 MUDANCA DE ESTADO -->
+    <section class="topic" id="topic-14">
+      <div class="eyebrow">14 · construtores</div>
+      <h2>Mudança de estado</h2>
+      <p>Um objeto pode mudar depois de criado, sem que isso crie um objeto novo — é o mesmo objeto, só que com um valor diferente guardado dentro dele.</p>
+<div class="code"><span class="c-com">// inicialmente: horario = 09:10</span>
+agendamento.reagendar(<span class="c-str">"14:30"</span>);
+<span class="c-com">// agora: horario = 14:30</span></div>
+      <details class="check">
+        <summary>Depois do <code>reagendar</code>, quantos objetos <code>Agendamento</code> existem? <span class="tag">testar</span></summary>
+        <div class="answer">Ainda apenas um. Nenhum <code>new</code> foi chamado — só o valor de um atributo mudou dentro do objeto que já existia.</div>
+      </details>
+    </section>
+
+    <!-- PARTE HERANÇA -->
+    <div class="part-header">
+      <div class="part-num">PARTE 4</div>
+      <h1>Herança</h1>
+      <p>O segundo pilar: como criar uma relação de tipo "isto <strong>é um</strong> caso mais específico daquilo".</p>
+    </div>
+
+    <!-- 15 HERANCA / EXTENDS -->
+    <section class="topic part-open" id="topic-15">
+      <div class="eyebrow">15 · herança</div>
+      <h2>"É UM" e extends</h2>
+      <p>Herança representa a relação <strong>"é um"</strong>. No nosso projeto: um <code>Cliente</code> é uma <code>Pessoa</code>. Um <code>Profissional</code> também é uma <code>Pessoa</code>. Ambos compartilham dados em comum (nome, e-mail), mas cada um tem seu próprio comportamento.</p>
+      <div class="analogy">
+        <span class="lbl">PENSE ASSIM</span>
+        "Pessoa" é a categoria geral — como "veículo". "Cliente" e "Profissional" são versões mais específicas — como "carro" e "moto": os dois <em>são</em> veículos, mas cada um também tem características próprias.
+      </div>
+<div class="code"><span class="c-kw">public class</span> <span class="c-type">Cliente</span> <span class="c-kw">extends</span> <span class="c-type">Pessoa</span> {
+}
+
+<span class="c-kw">public class</span> <span class="c-type">Profissional</span> <span class="c-kw">extends</span> <span class="c-type">Pessoa</span> {
+}</div>
+      <p class="sub">A palavra <code>extends</code> é o que cria essa relação — ela diz "esta classe é uma especialização daquela outra".</p>
+    </section>
+
+    <!-- 16 SUPER -->
+    <section class="topic" id="topic-16">
+      <div class="eyebrow">16 · herança</div>
+      <h2>super</h2>
+      <p><code>Pessoa</code> tem um construtor que recebe nome e e-mail. Como <code>Cliente</code> herda de <code>Pessoa</code>, ele precisa de um jeito de repassar esses dados para o construtor da classe "mãe" — é isso que <code>super(...)</code> faz.</p>
+<div class="code"><span class="c-kw">public</span> <span class="c-type">Pessoa</span>(<span class="c-type">String</span> nome, <span class="c-type">String</span> email) {
+    <span class="c-kw">this</span>.nome = nome;
+    <span class="c-kw">this</span>.email = email;
+}</div>
+<div class="code"><span class="c-kw">public</span> <span class="c-type">Cliente</span>(<span class="c-type">String</span> nome, <span class="c-type">String</span> email) {
+    <span class="c-kw">super</span>(nome, email);
+}</div>
+      <div class="flow">
+        <div class="box">new Cliente(...)</div>
+        <div class="arrow">→</div>
+        <div class="box">construtor Cliente</div>
+        <div class="arrow">→</div>
+        <div class="box">super(nome, email)</div>
+        <div class="arrow">→</div>
+        <div class="box">construtor Pessoa</div>
+        <div class="arrow">→</div>
+        <div class="box">nome e email inicializados</div>
+      </div>
+    </section>
+
+    <!-- 17 METODOS HERDADOS -->
+    <section class="topic" id="topic-17">
+      <div class="eyebrow">17 · herança</div>
+      <h2>Métodos herdados</h2>
+      <p><code>Pessoa</code> já tem <code>getNome()</code>. Como <code>Cliente</code> herda de <code>Pessoa</code>, ele ganha esse método de graça — sem precisar reescrevê-lo.</p>
+<div class="code"><span class="c-com">// dentro de Pessoa:</span>
+<span class="c-kw">public</span> <span class="c-type">String</span> getNome() {
+    <span class="c-kw">return</span> <span class="c-kw">this</span>.nome;
+}
+
+<span class="c-com">// funciona mesmo sem declarar getNome() em Cliente:</span>
+cliente.getNome();</div>
+    </section>
+
+    <!-- PARTE POLIMORFISMO -->
+    <div class="part-header">
+      <div class="part-num">PARTE 5</div>
+      <h1>Polimorfismo</h1>
+      <p>O terceiro pilar: tratar objetos diferentes através de um tipo em comum, e deixar cada um reagir do seu próprio jeito.</p>
+    </div>
+
+    <!-- 18 POLIMORFISMO -->
+    <section class="topic part-open" id="topic-18">
+      <div class="eyebrow">18 · polimorfismo</div>
+      <h2>Polimorfismo</h2>
+      <p>Uma referência de um tipo mais geral pode apontar para um objeto de um tipo mais específico.</p>
+<div class="code"><span class="c-type">Pessoa</span> pessoa1 = <span classssoakw">new</span> <span class="c-type">Cliente</span>(<span class="c-str">"Wellington"</span>, <span class="c-str">"email"</span>);
+<span class="c-type">Pessoa</span> pessoa2 = <span class="c-kw">new</span> <span class="c-type">Profissional</span>(<span class="c-str">"Marina"</span>, <span class="c-str">"email"</span>);</div>
+      <div class="breakdown">
+        <div class="breakdown-row"><div class="piece">Pessoa pessoa1</div><div class="expl">o <em>tipo</em> declarado da variável — mais geral.</div></div>
+        <div class="breakdown-row"><div class="piece">new Cliente(...)</div><div class="expl">o objeto <em>real</em> criado na memória — mais específico.</div></div>
+      </div>
+      <div class="analogy">
+        <span class="lbl">PENSE ASSIM</span>
+        É como guardar um "carro" e uma "moto" numa lista rotulada só de "veículo". Você pode tratar os dois de forma genérica (como veículos), mesmo sabendo que, por baixo, cada um é uma coisa diferente.
+      </div>
+    </section>
+
+    <!-- 19 SOBRESCRITA -->
+    <section class="topic" id="topic-19">
+      <div class="eyebrow">19 · polimorfismo</div>
+      <h2>Sobrescrita e @Override</h2>
+      <p><code>Pessoa</code> pode ter um método genérico <code>apresentar()</code>. Cada classe filha pode fornecer sua própria versão — isso é <strong>sobrescrita</strong>.</p>
+<div class="code"><span class="c-kw">public void</span> apresentar() {
+}
+<span class="c-com">// em Cliente:</span>
+<span class="c-kw">@Override</span>
+<span class="c-kw">public void</span> apresentar() {
+    System.out.println(<span class="c-str">"Eu sou cliente"</span>);
+}
+<span class="c-com">// em Profissional:</span>
+<span class="c-kw">@Override</span>
+<span class="c-kw">public void</span> apresentar() {
+    System.out.println(<span class="c-str">"Eu sou profissional"</span>);
+}</div>
+      <p class="sub"><code>@Override</code> é apenas uma anotação — ela avisa o Java (e quem lê o código) que essa é intencionalmente uma nova implementação de um método que já existia na classe mãe. Se o nome não bater com nenhum método herdado, o Java aponta erro, o que ajuda a evitar erros de digitação.</p>
+    </section>
+
+    <!-- 20 SOBRECARGA X SOBRESCRITA -->
+    <section class="topic" id="topic-20">
+      <div class="eyebrow">20 · polimorfismo</div>
+      <h2>Sobrecarga × sobrescrita</h2>
+      <p>Os nomes parecem sinônimos, mas são conceitos bem diferentes.</p>
+      <div class="compare">
+        <div class="col">
+          <h4>Sobrecarga (overload)</h4>
+          Mesmo nome + parâmetros diferentes, na <em>mesma classe</em>.
+<div class="code" style="margin-top:10px;">Agendamento()
+Agendamento(String horario)</div>
+        </div>
+        <div class="col">
+          <h4>Sobrescrita (override)</h4>
+          Herança + mesmo método + nova implementação, em uma <em>classe filha</em>.
+<div class="code" style="margin-top:10px;">Pessoa.apresentar()
+Cliente.apresentar()</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARTE ABSTRAÇÃO -->
+    <div class="part-header">
+      <div class="part-num">PARTE 6</div>
+      <h1>Abstração</h1>
+      <p>O quarto pilar: criar conceitos gerais demais para existir sozinhos, e obrigar as classes filhas a preencherem os detalhes.</p>
+    </div>
+
+    <!-- 21 CLASSE ABSTRATA -->
+    <section class="topic part-open" id="topic-21">
+      <div class="eyebrow">21 · abstração</div>
+      <h2>Classe abstrata</h2>
+      <p><code>Pessoa</code>, sozinha, representa só um conceito geral demais para existir de verdade no nosso sistema — nunca vamos cadastrar "uma pessoa genérica", só clientes ou profissionais. Por isso ela vira uma <strong>classe abstrata</strong>.</p>
+<div class="code"><span class="c-kw">public abstract class</span> <span class="c-type">Pessoa</span> {
+}</div>
+      <p>Uma classe abstrata não pode ser instanciada diretamente:</p>
+<div class="code"><span class="c-type">Pessoa</span> pessoa = <span class="c-kw">new</span> <span class="c-type">Pessoa</span>(...);
+<span class="c-com">// erro de compilação</span>
+
+<span class="c-type">Pessoa</span> pessoa = <span class="c-kw">new</span> <span class="c-type">Cliente</span>(...);
+<span class="c-com">// funciona: o objeto real é Cliente</span></div>
+    </section>
+
+    <!-- 22 METODO ABSTRATO -->
+    <section class="topic" id="topic-22">
+      <div class="eyebrow">22 · abstração</div>
+      <h2>Método abstrato</h2>
+      <p>Dentro de <code>Pessoa</code>, podemos declarar um método sem implementação nenhuma:</p>
+<div class="code"><span class="c-kw">public abstract void</span> apresentar();</div>
+      <p>Isso não tem chaves <code>{ }</code> porque não existe implementação ali — a implementação real fica por conta de cada classe filha. É uma forma de dizer:</p>
+      <div class="note">"Toda classe concreta que herdar de <code>Pessoa</code> é <strong>obrigada</strong> a implementar <code>apresentar()</code> do seu próprio jeito."</div>
+    </section>
+
+    <!-- 23 QUATRO PILARES -->
+    <section class="topic" id="topic-23">
+      <div class="eyebrow">23 · síntese</div>
+      <h2>Os quatro pilares que estudamos</h2>
+      <div class="pillars">
+        <div class="pillar"><div class="t">ENCAPSULAMENTO</div><div class="d">proteger e controlar o estado interno do objeto.</div></div>
+        <div class="pillar"><div class="t">HERANÇA</div><div class="d">criar a relação "é um" entre uma classe geral e suas especializações.</div></div>
+        <div class="pillar"><div class="t">POLIMORFISMO</div><div class="d">trabalhar com objetos diferentes através de um tipo em comum.</div></div>
+        <div class="pillar"><div class="t">ABSTRAÇÃO</div><div class="d">criar conceitos gerais e deixar os detalhes para as classes concretas.</div></div>
+      </div>
+    </section>
+
+    <!-- PARTE ASSOCIAÇÃO -->
+    <div class="part-header">
+      <div class="part-num">PARTE 7</div>
+      <h1>Associação</h1>
+      <p>Nem toda relação entre classes é herança. Muitas vezes um objeto simplesmente <strong>guarda uma referência</strong> para outro — é isso que conecta <code>Agendamento</code>, <code>Cliente</code>, <code>Profissional</code> e <code>Servico</code>.</p>
+    </div>
+
+    <!-- 24 TEM UM -->
+    <section class="topic part-open" id="topic-24">
+      <div class="eyebrow">24 · associação</div>
+      <h2>"TEM UM"</h2>
+      <p>Associação é quando um objeto se relaciona com outro objeto, guardando-o como atributo. No nosso projeto: um <code>Agendamento</code> tem um <code>Cliente</code>, tem um <code>Serviço</code>, tem um <code>Profissional</code>.</p>
+<div class="code"><span class="c-kw">public class</span> <span class="c-type">Agendamento</span> {
+
+    <span class="c-kw">private</span> <span class="c-type">Cliente</span> cliente;
+    <span class="c-kw">private</span> <span class="c-type">Servico</span> servico;
+    <span class="c-kw">private</span> <span class="c-type">Profissional</span> profissional;
+}</div>
+      <div class="note"><b>Não confunda com herança:</b> "Cliente <em>é uma</em> Pessoa" é herança (<code>extends</code>). "Agendamento <em>tem um</em> Cliente" é associação (um atributo do tipo <code>Cliente</code>). São perguntas diferentes que levam a soluções diferentes.</div>
+      <div class="compare">
+        <div class="col">
+          <h4>É UM → herança</h4>
+<div class="code" style="margin:0;"><span class="c-kw">class</span> <span class="c-type">Cliente</span> <span class="c-kw">extends</span> <span class="c-type">Pessoa</span></div>
+        </div>
+        <div class="col">
+          <h4>TEM UM → associação</h4>
+<div class="code" style="margin:0;"><span class="c-kw">private</span> <span class="c-type">Cliente</span> cliente;</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 25 CLASSES COMO TIPOS -->
+    <section class="topic" id="topic-25">
+      <div class="eyebrow">25 · associação</div>
+      <h2>Nossas próprias classes também são tipos</h2>
+      <p>Já usamos tipos prontos do Java como <code>String</code>, <code>int</code> e <code>double</code>. Mas quando criamos <code>public class Cliente { }</code>, <code>Cliente</code> também vira um tipo válido — por isso podemos escrever <code>private Cliente cliente;</code> normalmente.</p>
+<div class="code"><span class="c-kw">private</span> <span class="c-type">Cliente</span> cliente;
+<span class="c-com">//    ↑          ↑          ↑
+// acesso      tipo       nome</span></div>
+      <p>Leitura em voz alta: <em>"o objeto Agendamento possui um atributo privado chamado cliente, capaz de guardar uma referência para um objeto Cliente."</em></p>
+      <h3>Por que criamos uma classe Servico?</h3>
+      <p>Poderíamos ter usado só <code>private String servico;</code>, guardando apenas <code>"Corte"</code>. Mas um serviço de verdade tem várias informações (nome, preço, duração...) — então faz mais sentido que <code>Servico</code> seja sua própria classe, e não apenas um texto solto.</p>
+    </section>
+
+    <!-- 26 REFERENCIA -->
+    <section class="topic" id="topic-26">
+      <div class="eyebrow">26 · associação</div>
+      <h2>Referência, não cópia</h2>
+      <p>Quando o construtor do <code>Agendamento</code> recebe um <code>Cliente</code> e faz <code>this.cliente = cliente;</code>, ele <strong>não copia</strong> os dados do cliente (nome, e-mail) para dentro de si. Ele guarda uma referência — um "endereço" que aponta para o objeto <code>Cliente</code> que já existe em outro lugar da memória.</p>
+<div class="code"><span class="c-kw">public</span> <span class="c-type">Agendamento</span>(
+        <span class="c-type">Cliente</span> cliente,
+        <span class="c-type">Servico</span> servico,
+        <span class="c-type">Profissional</span> profissional,
+        <span class="c-type">String</span> data,
+        <span class="c-type">String</span> horario) {
+
+    <span class="c-kw">this</span>.cliente = cliente;
+    <span class="c-kw">this</span>.profissional = profissional;
+    <span class="c-kw">this</span>.servico = servico;
+    <span class="c-kw">this</span>.data = data;
+    <span class="c-kw">this</span>.horario = horario;
+}</div>
+      <div class="diagram">
+                  Agendamento
+               ┌──────────────┐
+               │              │
+<span class="item">cliente ───────┤ cliente      │</span>
+               │              │
+<span class="item">servico ───────┤ servico      │</span>
+               │              │
+<span class="item">profissional ──┤ profissional │</span>
+               │              │
+               │ data         │
+               │ horario      │
+               └──────────────┘
+      </div>
+      <p>E o getter que devolve esse atributo não devolve um texto — devolve o próprio objeto:</p>
+<div class="code"><span class="c-kw">public</span> <span class="c-type">Cliente</span> getCliente() {
+    <span class="c-kw">return</span> <span class="c-kw">this</span>.cliente;
+}</div>
+    </section>
+
+    <!-- 27 ENCADEAMENTO -->
+    <section class="topic" id="topic-27">
+      <div class="eyebrow">27 · associação</div>
+      <h2>Encadeamento de métodos</h2>
+      <p>Como <code>getCliente()</code> devolve um objeto <code>Cliente</code>, podemos chamar imediatamente outro método <em>nesse</em> objeto devolvido, tudo na mesma linha:</p>
+<div class="code">agendamento.getCliente().getNome();</div>
+      <div class="flow">
+        <div class="box">Agendamento</div>
+        <div class="arrow">→</div>
+        <div class="box">getCliente()</div>
+        <div class="arrow">→</div>
+        <div class="box">Cliente</div>
+        <div class="arrow">→</div>
+        <div class="box">getNome()</div>
+        <div class="arrow">→</div>
+        <div class="box">"Wellington"</div>
+      </div>
+      <p>Essa linha é só um atalho para dois passos separados — o resultado é idêntico:</p>
+<div class="code"><span class="c-type">Cliente</span> clienteDoAgendamento = agendamento.getCliente();
+<span class="c-type">String</span> nome = clienteDoAgendamento.getNome();</div>
+      <p class="sub">O mesmo vale para <code>agendamento.getServico().getPreco()</code>, ou qualquer outra combinação entre objetos associados.</p>
+    </section>
+
+    <!-- 28 POR QUE NAO SETTERS -->
+    <section class="topic" id="topic-28">
+      <div class="eyebrow">28 · associação</div>
+      <h2>Por que não usamos setters aqui?</h2>
+      <p>O construtor já cria o <code>Agendamento</code> completo, com cliente, serviço e profissional definidos de uma vez. Não é necessário permitir <code>setCliente()</code>, <code>setServico()</code> ou <code>setProfissional()</code> soltos — em vez disso, criamos operações com significado real, como <code>reagendar()</code>, <code>cancelar()</code> ou <code>trocarProfissional()</code>, e colocamos as regras de negócio dentro delas.</p>
+    </section>
+
+    <!-- PARTE PROJETO ATE AQUI -->
+    <div class="part-header">
+      <div class="part-num">PARTE 8</div>
+      <h1>O projeto até aqui</h1>
+      <p>Juntando tudo: as cinco classes completas do sistema, o teste que as conecta, e para onde o projeto vai a partir daqui.</p>
+    </div>
+
+    <!-- 29 MODELAGEM COMPLETA -->
+    <section class="topic part-open" id="topic-29">
+      <div class="eyebrow">29 · o projeto até aqui</div>
+      <h2>Modelagem completa</h2>
+      <div class="diagram">
+                   Pessoa
+                 (abstract)
+                 /        \
+                /          \
+               ↓            ↓
+          Cliente      Profissional
+               \          /
+                \        /
+                 \      /
+                  ↓    ↓
+                Agendamento
+                    ↑
+                    │
+                 Servico
+      </div>
+<div class="code"><span class="c-kw">public abstract class</span> <span class="c-type">Pessoa</span> {
+
+    <span class="c-kw">private</span> <span class="c-type">String</span> nome;
+    <span class="c-kw">private</span> <span class="c-type">String</span> email;
+
+    <span class="c-kw">public</span> <span class="c-type">Pessoa</span>(<span class="c-type">String</span> nome, <span class="c-type">String</span> email) {
+        <span class="c-kw">this</span>.nome = nome;
+        <span class="c-kw">this</span>.email = email;
+    }
+
+    <span class="c-kw">public</span> <span class="c-type">String</span> getNome() { <span class="c-kw">return</span> <span class="c-kw">this</span>.nome; }
+    <span class="c-kw">public</span> <span class="c-type">String</span> getEmail() { <span class="c-kw">return</span> <span class="c-kw">this</span>.email; }
+
+    <span class="c-kw">public abstract void</span> apresentar();
+}</div>
+<div class="code"><span class="c-kw">public class</span> <span class="c-type">Cliente</span> <span class="c-kw">extends</span> <span class="c-type">Pessoa</span> {
+
+    <span class="c-kw">public</span> <span class="c-type">Cliente</span>(<span class="c-type">String</span> nome, <span class="c-type">String</span> email) {
+        <span class="c-kw">super</span>(nome, email);
+    }
+
+    <span class="c-kw">@Override</span>
+    <span class="c-kw">public void</span> apresentar() {
+        System.out.println(<span class="c-str">"Eu sou cliente"</span>);
+    }
+}</div>
+<div class="code"><span class="c-kw">public class</span> <span class="c-type">Servico</span> {
+
+    <span class="c-kw">private</span> <span class="c-type">String</span> nome;
+    <span class="c-kw">private</span> <span class="c-kw">double</span> preco;
+
+    <span class="c-kw">public</span> <span class="c-type">Servico</span>(<span class="c-type">String</span> nome, <span class="c-kw">double</span> preco) {
+        <span class="c-kw">this</span>.nome = nome;
+        <span class="c-kw">this</span>.preco = preco;
+    }
+
+    <span class="c-kw">public</span> <span class="c-type">String</span> getNome() { <span class="c-kw">return</span> <span class="c-kw">this</span>.nome; }
+    <span class="c-kw">public</span> <span class="c-kw">double</span> getPreco() { <span class="c-kw">return</span> <span class="c-kw">this</span>.preco; }
+}</div>
+<div class="code"><span class="c-kw">public class</span> <span class="c-type">Agendamento</span> {
+
+    <span class="c-kw">private</span> <span class="c-type">Cliente</span> cliente;
+    <span class="c-kw">private</span> <span class="c-type">Servico</span> servico;
+    <span class="c-kw">private</span> <span class="c-type">Profissional</span> profissional;
+    <span class="c-kw">private</span> <span class="c-type">String</span> data;
+    <span class="c-kw">private</span> <span class="c-type">String</span> horario;
+
+    <span class="c-kw">public</span> <span class="c-type">Agendamento</span>(<span class="c-type">Cliente</span> cliente, <span class="c-type">Servico</span> servico,
+            <span class="c-type">Profissional</span> profissional, <span class="c-type">String</span> data, <span class="c-type">String</span> horario) {
+        <span class="c-kw">this</span>.cliente = cliente;
+        <span class="c-kw">this</span>.profissional = profissional;
+        <span class="c-kw">this</span>.servico = servico;
+        <span class="c-kw">this</span>.data = data;
+        <span class="c-kw">this</span>.horario = horario;
+    }
+
+    <span class="c-kw">public</span> <span class="c-type">Cliente</span> getCliente() { <span class="c-kw">return</span> <span class="c-kw">this</span>.cliente; }
+    <span class="c-kw">public</span> <span class="c-type">Servico</span> getServico() { <span class="c-kw">return</span> <span class="c-kw">this</span>.servico; }
+    <span class="c-kw">public</span> <span class="c-type">Profissional</span> getProfissional() { <span class="c-kw">return</span> <span class="c-kw">this</span>.profissional; }
+    <span class="c-kw">public</span> <span class="c-type">String</span> getData() { <span class="c-kw">return</span> <span class="c-kw">this</span>.data; }
+    <span class="c-kw">public</span> <span class="c-type">String</span> getHorario() { <span class="c-kw">return</span> <span class="c-kw">this</span>.horario; }
+
+    <span class="c-kw">public void</span> reagendar(<span class="c-type">String</span> novoHorario) {
+        <span class="c-kw">if</span> (novoHorario == <span class="c-kw">null</span>) { <span class="c-kw">return</span>; }
+        <span class="c-kw">this</span>.horario = novoHorario;
+    }
+}</div>
+      <h3>Teste juntando tudo</h3>
+<div class="code"><span class="c-type">Cliente</span> cliente = <span class="c-kw">new</span> <span class="c-type">Cliente</span>(<span class="c-str">"Wellington"</span>, <span class="c-str">"wellington@gmail.com"</span>);
+<span class="c-type">Profissional</span> profissional = <span class="c-kw">new</span> <span class="c-type">Profissional</span>(<span class="c-str">"Marina"</span>, <span class="c-str">"marina@gmail.com"</span>);
+<span class="c-type">Servico</span> servico = <span class="c-kw">new</span> <span class="c-type">Servico</span>(<span class="c-str">"Corte"</span>, 40);
+
+<span class="c-type">Agendamento</span> agendamento = <span class="c-kw">new</span> <span class="c-type">Agendamento</span>(
+        cliente, servico, profissional, <span class="c-str">"07/10"</span>, <span class="c-str">"09:10"</span>
+);
+
+System.out.println(agendamento.getCliente().getNome());       <span class="c-com">// Wellington</span>
+System.out.println(agendamento.getProfissional().getNome());  <span class="c-com">// Marina</span>
+System.out.println(agendamento.getServico().getNome());       <span class="c-com">// Corte</span>
+System.out.println(agendamento.getServico().getPreco());      <span class="c-com">// 40.0</span></div>
+      <div class="note"><b>De olho no futuro:</b> essas mesmas associações entre objetos (<code>cliente</code>, <code>servico</code>, <code>profissional</code> dentro de <code>Agendamento</code>) mais tarde virarão colunas de relacionamento no banco de dados, como <code>cliente_id</code> e <code>profissional_id</code> numa tabela <code>agendamento</code>.</div>
+      <p class="sub"><strong>Regra geral pra decidir se algo vira uma classe:</strong> pergunte se aquilo é só um valor solto, ou se representa uma coisa com informações e comportamentos próprios. <code>"Corte"</code> poderia ser uma simples String — mas um serviço de verdade, com nome, preço e duração, merece ser sua própria classe.</p>
+    </section>
+
+    <!-- 30 PROXIMOS ASSUNTOS -->
+    <section class="topic" id="topic-30">
+      <div class="eyebrow">30 · o projeto até aqui</div>
+      <h2>Onde estamos, e o que vem a seguir</h2>
+      <h3>Já estudamos</h3>
+      <ul class="checklist">
+        <li>Classe e objeto</li>
+        <li>Atributos e métodos</li>
+        <li>Parâmetros e return</li>
+        <li>this</li>
+        <li>Construtor e construtor padrão</li>
+        <li>Sobrecarga</li>
+        <li>public e private</li>
+        <li>Getter e setter</li>
+        <li>Encapsulamento</li>
+        <li>Mudança de estado</li>
+        <li>Herança, extends, super</li>
+        <li>Relação "é um"</li>
+        <li>Polimorfismo</li>
+        <li>Sobrescrita e @Override</li>
+        <li>Abstração e classe abstrata</li>
+        <li>Método abstrato</li>
+        <li>Associação e relação "tem um"</li>
+        <li>Classes como tipos</li>
+        <li>Referências entre objetos</li>
+        <li>Encadeamento de métodos</li>
+      </ul>
+      <h3>Próximos assuntos do projeto</h3>
+      <ul class="roadmap">
+        <li><span class="n">1.</span> enum — StatusAgendamento (agendado, cancelado, concluído)</li>
+        <li><span class="n">2.</span> LocalDate e LocalTime — datas e horários reais</li>
+        <li><span class="n">3.</span> List e ArrayList — vários clientes, profissionais, agendamentos</li>
+        <li><span class="n">4.</span> for / for-each — percorrer e listar objetos</li>
+        <li><span class="n">5.</span> buscas — encontrar cliente, serviço ou agendamento</li>
+        <li><span class="n">6.</span> regras de negócio — horário ocupado, data passada, cancelamento</li>
+        <li><span class="n">7.</span> Exceptions — tratar erros corretamente</li>
+        <li><span class="n">8.</span> Interfaces — quando surgir necessidade real</li>
+        <li><span class="n">9.</span> sistema em memória completo — cadastrar, listar, buscar, agendar, reagendar, cancelar</li>
+      </ul>
+      <p class="sub">E depois disso, o caminho segue para HTTP, REST, Spring Boot, Controller, Service, Repository, PostgreSQL, JPA/Hibernate, DTOs, validação, testes, React e deploy.</p>
+    </section>
+
+    <!-- GLOSSARIO -->
+    <section class="topic" id="glossario">
+      <div class="eyebrow">referência rápida</div>
+      <h2>Glossário</h2>
+      <p>Uma cola de bolso com os termos usados nesta ficha, em uma frase cada.</p>
+      <dl class="glossary">
+        <div class="gterm"><dt>Classe</dt><dd>O molde que define quais informações e ações um tipo de objeto vai ter.</dd></div>
+        <div class="gterm"><dt>Objeto</dt><dd>Uma instância concreta de uma classe, criada com <code>new</code>, com seus próprios valores.</dd></div>
+        <div class="gterm"><dt>Atributo</dt><dd>Um dado guardado dentro de um objeto (o "tem").</dd></div>
+        <div class="gterm"><dt>Método</dt><dd>Uma ação que um objeto sabe executar (o "faz").</dd></div>
+        <div class="gterm"><dt>Parâmetro</dt><dd>Um valor recebido de fora por um método ou construtor.</dd></div>
+        <div class="gterm"><dt>this</dt><dd>Referência ao objeto atual — usada sobretudo para diferenciar o atributo de um parâmetro de mesmo nome.</dd></div>
+        <div class="gterm"><dt>public / private</dt><dd>Modificadores que liberam ou restringem o acesso direto a um atributo ou método.</dd></div>
+        <div class="gterm"><dt>Getter / Setter</dt><dd>Métodos públicos para ler ou alterar um atributo privado.</dd></div>
+        <div class="gterm"><dt>Encapsulamento</dt><dd>O objeto protege seu estado interno e controla como ele pode ser lido ou alterado.</dd></div>
+        <div class="gterm"><dt>Construtor</dt><dd>Bloco especial, com o mesmo nome da classe e sem retorno, que inicializa o objeto ao nascer.</dd></div>
+        <div class="gterm"><dt>Sobrecarga</dt><dd>Vários métodos ou construtores com o mesmo nome, diferenciados pelos parâmetros.</dd></div>
+        <div class="gterm"><dt>Estado</dt><dd>O conjunto de valores que um objeto guarda em um dado momento.</dd></div>
+        <div class="gterm"><dt>Herança / extends</dt><dd>Relação "é um": uma classe filha herda atributos e métodos de uma classe mãe.</dd></div>
+        <div class="gterm"><dt>super</dt><dd>Chama o construtor (ou método) da classe mãe a partir da classe filha.</dd></div>
+        <div class="gterm"><dt>Polimorfismo</dt><dd>Uma referência de tipo geral pode apontar para um objeto de tipo mais específico.</dd></div>
+        <div class="gterm"><dt>Sobrescrita / @Override</dt><dd>Uma classe filha fornece uma nova implementação de um método herdado.</dd></div>
+        <div class="gterm"><dt>Abstração</dt><dd>Criar um conceito geral demais para existir sozinho, deixando os detalhes para as classes concretas.</dd></div>
+        <div class="gterm"><dt>Classe / método abstrato</dt><dd>Uma classe que não pode ser instanciada diretamente, ou um método sem implementação que as classes filhas são obrigadas a completar.</dd></div>
+        <div class="gterm"><dt>Associação / "tem um"</dt><dd>Um objeto guarda uma referência para outro objeto como atributo.</dd></div>
+        <div class="gterm"><dt>Encadeamento de métodos</dt><dd>Chamar um método sobre o resultado de outro, tudo na mesma linha (ex.: <code>getCliente().getNome()</code>).</dd></div>
+      </dl>
+    </section>
+
+    <footer>
+      Ficha de estudo baseada no material de revisão de Java e POO do projeto de agendamentos da barbearia.
+    </footer>
+  </main>
+</div>
+
+<script>
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = scrolled + '%';
+  });
+
+  const links = document.querySelectorAll('.navlist a');
+  const sections = document.querySelectorAll('section.topic');
+  const map = new Map();
+  links.forEach(l => map.set(l.getAttribute('href').slice(1), l));
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = map.get(entry.target.id);
+      if (!link) return;
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-10% 0px -70% 0px', threshold: 0 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
