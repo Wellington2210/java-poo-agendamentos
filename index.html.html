@@ -35,6 +35,15 @@
     line-height:1.7;
   }
   ::selection{ background: var(--brass); color:#17181c; }
+  a:focus-visible, button:focus-visible, summary:focus-visible{
+    outline: 2px solid var(--brass);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .note, .analogy, .pillar, .check{ transition: border-color .15s ease, transform .15s ease; }
+  .check:hover{ border-color: var(--brass-dim); }
+  .pillar:hover{ border-color: var(--brass-dim); transform: translateY(-1px); }
 
   #progress{
     position:fixed; top:0; left:0; height:3px; width:0%;
@@ -210,6 +219,25 @@
     z-index:70;
   }
 
+  #toTop{
+    position:fixed;
+    right: 22px; bottom: 22px;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    color: var(--brass);
+    font-size: 16px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    opacity:0; pointer-events:none;
+    transform: translateY(8px);
+    transition: opacity .2s ease, transform .2s ease, border-color .15s ease;
+    z-index: 50;
+  }
+  #toTop.show{ opacity:1; pointer-events:auto; transform: translateY(0); }
+  #toTop:hover{ border-color: var(--brass-dim); }
+
   @media (max-width: 880px){
     .layout{ grid-template-columns: 1fr; }
     .mobile-bar{ display:flex; }
@@ -245,9 +273,10 @@
 
 <div class="mobile-bar">
   <button class="menu-btn" id="menuBtn" aria-label="Abrir menu">☰</button>
-  <div class="title">Java & POO<span>FICHA Nº 001 · AGENDAMENTOS</span></div>
+  <div class="title">Java & POO<span id="mobileNowReading">FICHA Nº 001 · AGENDAMENTOS</span></div>
 </div>
 <div class="scrim" id="scrim"></div>
+<button id="toTop" aria-label="Voltar ao topo">↑</button>
 
 <div class="layout">
   <nav class="sidebar" id="sidebar">
@@ -1128,6 +1157,8 @@ System.out.println(agendamento.getServico().getPreco());      <span class="c-com
       if (entry.isIntersecting) {
         links.forEach(l => l.classList.remove('active'));
         link.classList.add('active');
+        const nowReading = document.getElementById('mobileNowReading');
+        if (nowReading) nowReading.textContent = link.textContent.trim();
       }
     });
   }, { rootMargin: '-10% 0px -70% 0px', threshold: 0 });
@@ -1142,10 +1173,14 @@ System.out.println(agendamento.getServico().getPreco());      <span class="c-com
   function openNav(){
     sidebar.classList.add('open');
     document.body.classList.add('nav-open');
+    menuBtn.textContent = '✕';
+    menuBtn.setAttribute('aria-label', 'Fechar menu');
   }
   function closeNav(){
     sidebar.classList.remove('open');
     document.body.classList.remove('nav-open');
+    menuBtn.textContent = '☰';
+    menuBtn.setAttribute('aria-label', 'Abrir menu');
   }
 
   menuBtn.addEventListener('click', () => {
@@ -1153,6 +1188,14 @@ System.out.println(agendamento.getServico().getPreco());      <span class="c-com
   });
   scrim.addEventListener('click', closeNav);
   links.forEach(l => l.addEventListener('click', closeNav));
+
+  // back to top button
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 600) toTop.classList.add('show');
+    else toTop.classList.remove('show');
+  });
+  toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
 
 </body>
