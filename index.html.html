@@ -96,6 +96,39 @@
   .pipeline .step::after{ content:"→"; position:absolute; right:-2px; top:50%; transform:translate(50%,-50%); color: var(--brass); font-size:13px; z-index:2; }
   .pipeline .step:last-child::after{ content:none; }
 
+  /* journey map */
+  .journey-wrap{
+    margin-top: 36px;
+    border:1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    padding: 18px 10px 6px;
+    overflow-x:auto;
+  }
+  .journey-wrap svg{ display:block; min-width: 760px; width:100%; height:auto; }
+  .journey-path{ fill:none; stroke: var(--line); stroke-width:3; stroke-dasharray: 2 8; stroke-linecap:round; }
+  .journey-path.done{ stroke: var(--brass-dim); stroke-dasharray:none; }
+  .journey-node circle.ring{ fill: var(--surface); stroke: var(--line); stroke-width:2; }
+  .journey-node.done circle.ring{ stroke: var(--brass-dim); fill: var(--surface-2); }
+  .journey-node.current circle.ring{ stroke: var(--brass); fill: var(--surface-2); }
+  .journey-node .num{ font-family:'JetBrains Mono', monospace; font-size:13px; fill: var(--text-dim); font-weight:600; }
+  .journey-node.done .num, .journey-node.current .num{ fill: var(--text); }
+  .journey-node .lbl{ font-family:'Inter', sans-serif; font-size:12.5px; fill: var(--text-dim); }
+  .journey-node.current .lbl{ fill: var(--brass); font-weight:600; }
+  .journey-pulse{ fill:none; stroke: var(--brass); stroke-width:2; opacity:0.7; transform-origin: center; animation: pulseRing 2.2s ease-out infinite; }
+  @keyframes pulseRing{
+    0%{ r:16; opacity:0.8; }
+    100%{ r:30; opacity:0; }
+  }
+  .journey-here{ font-family:'JetBrains Mono', monospace; font-size:11.5px; fill: var(--brass); letter-spacing:.04em; }
+
+  /* progress bars */
+  .progressbar{ margin: 16px 0; }
+  .progressbar .plabel{ display:flex; justify-content:space-between; font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--text-dim); margin-bottom:6px; }
+  .progressbar .plabel b{ color:var(--text); font-weight:600; }
+  .progressbar .track{ height:11px; border-radius:6px; background:var(--surface-2); border:1px solid var(--line); overflow:hidden; }
+  .progressbar .fill{ height:100%; border-radius:6px 0 0 6px; background: linear-gradient(90deg, var(--brass-dim), var(--brass)); }
+
   .part-header{
     padding: 40px 64px 0;
     max-width: 880px;
@@ -340,6 +373,24 @@
     <ul class="navlist">
       <li><a href="#topic-29"><span class="num">29</span> Modelagem completa</a></li>
       <li><a href="#topic-30"><span class="num">30</span> Próximos assuntos</a></li>
+    </ul>
+    <div class="group-label">Status e datas reais</div>
+    <ul class="navlist">
+      <li><a href="#topic-31"><span class="num">31</span> null e NullPointerException</a></li>
+      <li><a href="#topic-32"><span class="num">32</span> enum e regras de status</a></li>
+      <li><a href="#topic-33"><span class="num">33</span> LocalDateTime</a></li>
+      <li><a href="#topic-34"><span class="num">34</span> Agendamento atualizado</a></li>
+    </ul>
+    <div class="group-label">Panorama do projeto</div>
+    <ul class="navlist">
+      <li><a href="#topic-35"><span class="num">35</span> Progresso atual</a></li>
+      <li><a href="#topic-36"><span class="num">36</span> O que falta de Java</a></li>
+      <li><a href="#topic-37"><span class="num">37</span> Sistema em memória</a></li>
+      <li><a href="#topic-38"><span class="num">38</span> Git, SQL e banco</a></li>
+      <li><a href="#topic-39"><span class="num">39</span> HTTP, REST e Spring</a></li>
+      <li><a href="#topic-40"><span class="num">40</span> Testes, Swagger, Segurança</a></li>
+      <li><a href="#topic-41"><span class="num">41</span> React, Docker e Deploy</a></li>
+      <li><a href="#topic-42"><span class="num">42</span> A ordem a partir de agora</a></li>
       <li><a href="#glossario"><span class="num">·</span> Glossário</a></li>
     </ul>
   </nav>
@@ -349,15 +400,54 @@
       <div class="kicker">REVISÃO DE JAVA E POO — PARA QUEM NUNCA VIU ISSO</div>
       <h1>Construindo o sistema de agendamentos da barbearia</h1>
       <p class="lede">Se você nunca programou orientado a objetos, comece pela seção 0. O material vai crescendo do básico (classe, objeto) até os quatro pilares da POO e a modelagem completa do projeto: Pessoa, Cliente, Profissional, Serviço e Agendamento.</p>
-      <div class="pipeline">
-        <div class="step"><b>Java</b>linguagem</div>
-        <div class="step"><b>POO</b>modelagem</div>
-        <div class="step"><b>Sistema em memória</b>lógica</div>
-        <div class="step"><b>HTTP / REST</b>comunicação</div>
-        <div class="step"><b>Spring Boot</b>framework</div>
-        <div class="step"><b>Banco de dados</b>persistência</div>
-        <div class="step"><b>React</b>interface</div>
-        <div class="step"><b>Projeto completo</b>entrega</div>
+      <div class="journey-wrap">
+        <svg viewBox="0 0 960 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa do trajeto de aprendizado, da linguagem Java até o projeto completo">
+          <path class="journey-path done" d="M60,150 C120,150 120,70 180,70 C240,70 240,150 300,150" />
+          <path class="journey-path" d="M300,150 C360,150 360,70 420,70 C480,70 480,150 540,150 C600,150 600,70 660,70 C720,70 720,150 780,150 C840,150 840,70 900,70" />
+
+          <g class="journey-node done">
+            <circle class="ring" cx="60" cy="150" r="16"></circle>
+            <text class="num" x="60" y="155" text-anchor="middle">1</text>
+            <text class="lbl" x="60" y="188" text-anchor="middle">Java</text>
+          </g>
+          <g class="journey-node done">
+            <circle class="ring" cx="180" cy="70" r="16"></circle>
+            <text class="num" x="180" y="75" text-anchor="middle">2</text>
+            <text class="lbl" x="180" y="42" text-anchor="middle">POO</text>
+          </g>
+          <g class="journey-node current">
+            <circle class="journey-pulse" cx="300" cy="150" r="16"></circle>
+            <circle class="ring" cx="300" cy="150" r="16"></circle>
+            <text class="num" x="300" y="155" text-anchor="middle">3</text>
+            <text class="lbl" x="300" y="188" text-anchor="middle">Sistema em memória</text>
+            <text class="journey-here" x="300" y="204" text-anchor="middle">você está aqui</text>
+          </g>
+          <g class="journey-node">
+            <circle class="ring" cx="420" cy="70" r="16"></circle>
+            <text class="num" x="420" y="75" text-anchor="middle">4</text>
+            <text class="lbl" x="420" y="42" text-anchor="middle">HTTP / REST</text>
+          </g>
+          <g class="journey-node">
+            <circle class="ring" cx="540" cy="150" r="16"></circle>
+            <text class="num" x="540" y="155" text-anchor="middle">5</text>
+            <text class="lbl" x="540" y="188" text-anchor="middle">Spring Boot</text>
+          </g>
+          <g class="journey-node">
+            <circle class="ring" cx="660" cy="70" r="16"></circle>
+            <text class="num" x="660" y="75" text-anchor="middle">6</text>
+            <text class="lbl" x="660" y="42" text-anchor="middle">Banco de dados</text>
+          </g>
+          <g class="journey-node">
+            <circle class="ring" cx="780" cy="150" r="16"></circle>
+            <text class="num" x="780" y="155" text-anchor="middle">7</text>
+            <text class="lbl" x="780" y="188" text-anchor="middle">React</text>
+          </g>
+          <g class="journey-node">
+            <circle class="ring" cx="900" cy="70" r="16"></circle>
+            <text class="num" x="900" y="75" text-anchor="middle">8</text>
+            <text class="lbl" x="900" y="42" text-anchor="middle">Projeto completo</text>
+          </g>
+        </svg>
       </div>
     </div>
 
@@ -1102,6 +1192,405 @@ System.out.println(agendamento.getServico().getPreco());      <span class="c-com
       <p class="sub">E depois disso, o caminho segue para HTTP, REST, Spring Boot, Controller, Service, Repository, PostgreSQL, JPA/Hibernate, DTOs, validação, testes, React e deploy.</p>
     </section>
 
+    <!-- PARTE STATUS E DATAS -->
+    <div class="part-header">
+      <div class="part-num">PARTE 9</div>
+      <h1>Status, null e datas reais</h1>
+      <p>Antes de sair do Java puro, faltam três peças para o agendamento virar algo realista: o que fazer quando não existe objeto nenhum, um jeito de limitar os estados possíveis, e datas de verdade em vez de texto solto.</p>
+    </div>
+
+    <!-- 31 NULL -->
+    <section class="topic part-open" id="topic-31">
+      <div class="eyebrow">31 · status e datas reais</div>
+      <h2>null e NullPointerException</h2>
+      <p><code>null</code> é um valor especial que significa <strong>"esta referência não aponta para nenhum objeto agora"</strong>. Não é um objeto vazio, nem um texto vazio — é a ausência de objeto.</p>
+<div class="code"><span class="c-type">Cliente</span> cliente = <span class="c-kw">null</span>;</div>
+      <p>O problema aparece quando você tenta chamar um método <em>nessa</em> referência vazia:</p>
+<div class="code"><span class="c-type">Cliente</span> cliente = <span class="c-kw">null</span>;
+cliente.getNome();
+<span class="c-com">// gera: NullPointerException</span></div>
+      <div class="analogy">
+        <span class="lbl">PENSE ASSIM</span>
+        É como pedir pra alguém ler o nome escrito numa ficha que ainda não existe. Não existe ficha nenhuma pra ler — o programa trava porque a instrução não faz sentido.
+      </div>
+      <p>Por isso é comum verificar antes de usar:</p>
+<div class="code"><span class="c-kw">if</span> (novaDataHora == <span class="c-kw">null</span>) {
+    <span class="c-kw">return</span>;
+}</div>
+      <p class="sub">Essa é exatamente a verificação que já aparecia dentro de <code>reagendar()</code> lá na seção 8 — agora você sabe por que ela existe: sem ela, passar <code>null</code> como novo horário derrubaria o programa.</p>
+    </section>
+
+    <!-- 32 ENUM -->
+    <section class="topic" id="topic-32">
+      <div class="eyebrow">32 · status e datas reais</div>
+      <h2>enum e regras de status</h2>
+      <p>Um <code>enum</code> representa um conjunto <strong>limitado</strong> de opções possíveis — diferente de uma <code>String</code>, que aceitaria qualquer texto digitado.</p>
+<div class="code"><span class="c-kw">public enum</span> <span class="c-type">StatusAgendamento</span> {
+    AGENDADO,
+    CANCELADO,
+    CONCLUIDO
+}</div>
+      <p><code>StatusAgendamento</code> também vira um tipo, do mesmo jeito que <code>Cliente</code> ou <code>Servico</code> viraram — por isso dá pra usá-lo como tipo de atributo:</p>
+<div class="code"><span class="c-kw">private</span> <span class="c-type">StatusAgendamento</span> status;
+<span class="c-com">// todo novo agendamento nasce assim:</span>
+<span class="c-kw">this</span>.status = StatusAgendamento.AGENDADO;</div>
+      <div class="compare">
+        <div class="col">
+          <h4>String</h4>
+          Aceita qualquer texto: <code>"agendadoo"</code>, <code>"xyz"</code>... nada impede um erro de digitação.
+        </div>
+        <div class="col">
+          <h4>enum</h4>
+          Só existem os valores declarados. Também dá pra comparar com <code>==</code> em vez de <code>.equals()</code>.
+        </div>
+      </div>
+      <p>Combinando <code>enum</code> com <code>if</code>, criamos regras de negócio de verdade — por exemplo, impedir que um agendamento já cancelado seja concluído:</p>
+<div class="code"><span class="c-kw">public void</span> cancelar() {
+
+    <span class="c-kw">if</span> (<span class="c-kw">this</span>.status == StatusAgendamento.CANCELADO) {
+        <span class="c-kw">return</span>;
+    }
+    <span class="c-kw">if</span> (<span class="c-kw">this</span>.status == StatusAgendamento.CONCLUIDO) {
+        <span class="c-kw">return</span>;
+    }
+
+    <span class="c-kw">this</span>.status = StatusAgendamento.CANCELADO;
+}</div>
+      <div class="diagram">
+                AGENDADO
+                /      \
+               /        \
+        cancelar()    concluir()
+            ↓             ↓
+       CANCELADO      CONCLUIDO
+      </div>
+      <div class="note">Repare que não existe caminho de <code>CANCELADO</code> para <code>CONCLUIDO</code>, nem o contrário — uma vez que o agendamento chega a um desses dois estados finais, ele para ali.</div>
+    </section>
+
+    <!-- 33 LOCALDATETIME -->
+    <section class="topic" id="topic-33">
+      <div class="eyebrow">33 · status e datas reais</div>
+      <h2>LocalDateTime e formatação</h2>
+      <p>Até agora, <code>data</code> e <code>horario</code> eram textos soltos (<code>"07/10"</code>, <code>"09:10"</code>). Isso funciona pra estudar, mas um sistema de verdade precisa de um tipo pensado pra representar datas — o <code>LocalDateTime</code>, que já vem pronto no Java.</p>
+<div class="code"><span class="c-kw">private</span> <span class="c-type">LocalDateTime</span> dataHora;
+<span class="c-com">// criando uma data específica:</span>
+<span class="c-type">LocalDateTime</span> dataHora = <span class="c-type">LocalDateTime</span>.of(2026, 12, 25, 20, 30);
+<span class="c-com">// representa: 25/12/2026 às 20:30</span></div>
+      <p>Como <code>LocalDateTime</code> guarda a data de um jeito interno, não exatamente igual ao que uma pessoa lê, usamos um <code>DateTimeFormatter</code> pra exibir no formato desejado:</p>
+<div class="code"><span class="c-type">DateTimeFormatter</span> formato =
+        <span class="c-type">DateTimeFormatter</span>.ofPattern(<span class="c-str">"dd/MM/yyyy HH:mm"</span>);
+
+agendamento.getDataHora().format(formato);
+<span class="c-com">// resultado: "25/12/2026 20:30"</span></div>
+    </section>
+
+    <!-- 34 AGENDAMENTO ATUALIZADO -->
+    <section class="topic" id="topic-34">
+      <div class="eyebrow">34 · status e datas reais</div>
+      <h2>Agendamento atualizado</h2>
+      <p>Juntando o <code>enum</code> de status e o <code>LocalDateTime</code>, a classe <code>Agendamento</code> fica assim:</p>
+<div class="code"><span class="c-kw">public class</span> <span class="c-type">Agendamento</span> {
+
+    <span class="c-kw">private</span> <span class="c-type">Cliente</span> cliente;
+    <span class="c-kw">private</span> <span class="c-type">Servico</span> servico;
+    <span class="c-kw">private</span> <span class="c-type">Profissional</span> profissional;
+    <span class="c-kw">private</span> <span class="c-type">StatusAgendamento</span> status;
+    <span class="c-kw">private</span> <span class="c-type">LocalDateTime</span> dataHora;
+
+    <span class="c-kw">public</span> <span class="c-type">Agendamento</span>(<span class="c-type">Cliente</span> cliente, <span class="c-type">Servico</span> servico,
+            <span class="c-type">Profissional</span> profissional, <span class="c-type">LocalDateTime</span> dataHora) {
+
+        <span class="c-kw">this</span>.cliente = cliente;
+        <span class="c-kw">this</span>.profissional = profissional;
+        <span class="c-kw">this</span>.servico = servico;
+        <span class="c-kw">this</span>.dataHora = dataHora;
+        <span class="c-kw">this</span>.status = StatusAgendamento.AGENDADO;
+    }
+
+    <span class="c-kw">public</span> <span class="c-type">Cliente</span> getCliente() { <span class="c-kw">return</span> <span class="c-kw">this</span>.cliente; }
+    <span class="c-kw">public</span> <span class="c-type">Servico</span> getServico() { <span class="c-kw">return</span> <span class="c-kw">this</span>.servico; }
+    <span class="c-kw">public</span> <span class="c-type">Profissional</span> getProfissional() { <span class="c-kw">return</span> <span class="c-kw">this</span>.profissional; }
+    <span class="c-kw">public</span> <span class="c-type">LocalDateTime</span> getDataHora() { <span class="c-kw">return</span> <span class="c-kw">this</span>.dataHora; }
+    <span class="c-kw">public</span> <span class="c-type">StatusAgendamento</span> getStatus() { <span class="c-kw">return</span> <span class="c-kw">this</span>.status; }
+
+    <span class="c-kw">public void</span> reagendar(<span class="c-type">LocalDateTime</span> novaDataHora) {
+        <span class="c-kw">if</span> (novaDataHora == <span class="c-kw">null</span>) { <span class="c-kw">return</span>; }
+        <span class="c-kw">this</span>.dataHora = novaDataHora;
+    }
+
+    <span class="c-kw">public void</span> concluir() {
+        <span class="c-kw">if</span> (<span class="c-kw">this</span>.status == StatusAgendamento.CANCELADO) { <span class="c-kw">return</span>; }
+        <span class="c-kw">if</span> (<span class="c-kw">this</span>.status == StatusAgendamento.CONCLUIDO) { <span class="c-kw">return</span>; }
+        <span class="c-kw">this</span>.status = StatusAgendamento.CONCLUIDO;
+    }
+
+    <span class="c-kw">public void</span> cancelar() {
+        <span class="c-kw">if</span> (<span class="c-kw">this</span>.status == StatusAgendamento.CANCELADO) { <span class="c-kw">return</span>; }
+        <span class="c-kw">if</span> (<span class="c-kw">this</span>.status == StatusAgendamento.CONCLUIDO) { <span class="c-kw">return</span>; }
+        <span class="c-kw">this</span>.status = StatusAgendamento.CANCELADO;
+    }
+}</div>
+      <div class="diagram">
+Pessoa (abstract)
+├── Cliente
+└── Profissional
+
+Servico
+
+StatusAgendamento
+├── AGENDADO
+├── CANCELADO
+└── CONCLUIDO
+
+Agendamento
+├── Cliente
+├── Profissional
+├── Servico
+├── LocalDateTime
+└── StatusAgendamento
+      </div>
+    </section>
+
+    <!-- PARTE PANORAMA -->
+    <div class="part-header">
+      <div class="part-num">PARTE 10</div>
+      <h1>Panorama do projeto</h1>
+      <p>Um raio-x honesto de onde o projeto está agora, e tudo que ainda falta percorrer até um sistema completo, publicado e pronto pra mostrar num processo seletivo.</p>
+    </div>
+
+    <!-- 35 PROGRESSO -->
+    <section class="topic part-open" id="topic-35">
+      <div class="eyebrow">35 · panorama do projeto</div>
+      <h2>Progresso atual</h2>
+      <p>Estimativas para acompanhar o avanço — vale atualizar conforme os tópicos forem sendo concluídos de verdade.</p>
+      <div class="progressbar">
+        <div class="plabel"><b>Java básico + POO</b><span>≈ 70%</span></div>
+        <div class="track"><div class="fill" style="width:70%"></div></div>
+      </div>
+      <div class="progressbar">
+        <div class="plabel"><b>Projeto completo</b><span>≈ 20%</span></div>
+        <div class="track"><div class="fill" style="width:20%"></div></div>
+      </div>
+      <div class="progressbar">
+        <div class="plabel"><b>Preparação para estágio back-end</b><span>≈ 35%</span></div>
+        <div class="track"><div class="fill" style="width:35%"></div></div>
+      </div>
+      <div class="progressbar">
+        <div class="plabel"><b>Preparação para júnior back-end</b><span>≈ 20%</span></div>
+        <div class="track"><div class="fill" style="width:20%"></div></div>
+      </div>
+      <p class="sub">Note a diferença entre "Java básico + POO" (bem avançado) e "projeto completo" (ainda no início) — dominar a linguagem é só a primeira parte do caminho até o sistema publicado.</p>
+    </section>
+
+    <!-- 36 O QUE FALTA DE JAVA -->
+    <section class="topic" id="topic-36">
+      <div class="eyebrow">36 · panorama do projeto</div>
+      <h2>O que falta de Java para concluir a base</h2>
+      <h3>Collections</h3>
+      <ul class="checklist">
+        <li>List / ArrayList</li>
+        <li>add(), get(), size(), remove()</li>
+        <li>contains() e percorrer listas</li>
+        <li>lista de objetos (não só de texto)</li>
+        <li>Set / HashSet</li>
+        <li>Map / HashMap</li>
+        <li>for-each percorrendo objetos</li>
+        <li>Generics básicos (List&lt;Agendamento&gt;)</li>
+      </ul>
+      <h3>static, final e Strings</h3>
+      <ul class="checklist">
+        <li>static (atributo/método da classe × do objeto)</li>
+        <li>final (valores que não devem mudar)</li>
+        <li>equals(), equalsIgnoreCase(), contains()</li>
+        <li>substring(), split(), replace(), trim()</li>
+        <li>isEmpty(), isBlank()</li>
+        <li>equals(), hashCode() e toString() de objetos</li>
+      </ul>
+      <h3>Exceptions, Interfaces e prática</h3>
+      <ul class="checklist">
+        <li>Exception, RuntimeException</li>
+        <li>try, catch, finally</li>
+        <li>throw, throws</li>
+        <li>exceptions personalizadas</li>
+        <li>interface e implements</li>
+        <li>debugging: breakpoint e stack trace</li>
+        <li>organização em camadas (domain, service, repository...)</li>
+      </ul>
+    </section>
+
+    <!-- 37 SISTEMA EM MEMORIA -->
+    <section class="topic" id="topic-37">
+      <div class="eyebrow">37 · panorama do projeto</div>
+      <h2>Sistema em memória da barbearia</h2>
+      <p>Antes do Spring Boot, a meta é fazer o sistema funcionar inteiro só com Java puro, guardando tudo na memória (sem banco de dados ainda).</p>
+      <h3>Funcionalidades que faltam</h3>
+      <ul class="checklist">
+        <li>armazenar vários clientes, profissionais e serviços</li>
+        <li>armazenar vários agendamentos</li>
+        <li>cadastrar cliente / profissional / serviço</li>
+        <li>criar, listar e buscar agendamento</li>
+        <li>reagendar, cancelar e concluir</li>
+      </ul>
+      <h3>Regras de negócio que ainda faltam</h3>
+      <ul class="checklist">
+        <li>impedir dois agendamentos no mesmo horário</li>
+        <li>verificar disponibilidade do profissional</li>
+        <li>impedir agendamento no passado</li>
+        <li>impedir reagendar um cancelado ou concluído</li>
+        <li>validar dados obrigatórios</li>
+        <li>validar cliente, profissional e serviço</li>
+        <li>controlar a duração do serviço</li>
+      </ul>
+    </section>
+
+    <!-- 38 GIT SQL BANCO -->
+    <section class="topic" id="topic-38">
+      <div class="eyebrow">38 · panorama do projeto</div>
+      <h2>Git, SQL e banco de dados</h2>
+      <h3>Git e GitHub</h3>
+      <ul class="checklist">
+        <li>git init, status, add, commit</li>
+        <li>git push, pull</li>
+        <li>branch, checkout / switch, merge</li>
+        <li>resolver conflito simples</li>
+        <li>.gitignore e README</li>
+        <li>projeto final publicado no GitHub</li>
+      </ul>
+      <h3>SQL e banco de dados (PostgreSQL)</h3>
+      <ul class="checklist">
+        <li>SELECT, WHERE, ORDER BY, GROUP BY</li>
+        <li>INSERT, UPDATE, DELETE</li>
+        <li>JOIN, INNER JOIN, LEFT JOIN</li>
+        <li>PRIMARY KEY, FOREIGN KEY</li>
+        <li>relacionamentos 1:1, 1:N, N:M</li>
+        <li>criar banco e tabelas, conectar a aplicação</li>
+      </ul>
+      <div class="diagram">
+agendamento
+├── id
+├── cliente_id
+├── profissional_id
+├── servico_id
+├── data_hora
+└── status
+      </div>
+    </section>
+
+    <!-- 39 HTTP REST SPRING -->
+    <section class="topic" id="topic-39">
+      <div class="eyebrow">39 · panorama do projeto</div>
+      <h2>HTTP, REST e Spring Boot</h2>
+      <h3>HTTP e REST</h3>
+      <ul class="checklist">
+        <li>request, response, endpoint, header, body</li>
+        <li>JSON e status code</li>
+        <li>métodos: GET, POST, PUT, PATCH, DELETE</li>
+        <li>boas práticas de URL de uma API REST</li>
+      </ul>
+<div class="code"><span class="c-com">GET    /agendamentos
+POST   /agendamentos
+GET    /agendamentos/10
+DELETE /agendamentos/10</span></div>
+      <h3>Spring Boot</h3>
+      <ul class="checklist">
+        <li>criar projeto, Maven, dependências</li>
+        <li>application.properties, injeção de dependência</li>
+        <li>@RestController, @RequestMapping</li>
+        <li>@GetMapping, @PostMapping, @PutMapping, @DeleteMapping</li>
+        <li>@PathVariable, @RequestParam, @RequestBody</li>
+        <li>@Service e regras de negócio na camada certa</li>
+        <li>Repository, JpaRepository</li>
+      </ul>
+      <div class="flow">
+        <div class="box">Controller</div>
+        <div class="arrow">→</div>
+        <div class="box">Service</div>
+        <div class="arrow">→</div>
+        <div class="box">Repository</div>
+      </div>
+      <h3>JPA, relacionamentos, DTO e validação</h3>
+      <ul class="checklist">
+        <li>@Entity, @Id, @GeneratedValue, @Column</li>
+        <li>@ManyToOne, @OneToMany, @OneToOne, @ManyToMany</li>
+        <li>DTO de request e de response</li>
+        <li>conversão entidade ↔ DTO</li>
+        <li>@Valid, @NotNull, @NotBlank, @Email, @Size</li>
+        <li>@ControllerAdvice, @ExceptionHandler</li>
+      </ul>
+    </section>
+
+    <!-- 40 TESTES SWAGGER SEGURANCA -->
+    <section class="topic" id="topic-40">
+      <div class="eyebrow">40 · panorama do projeto</div>
+      <h2>Testes, Swagger e Segurança</h2>
+      <ul class="checklist">
+        <li>teste unitário com JUnit</li>
+        <li>assertions e Mockito básico</li>
+        <li>testes de Service e de Controller/API</li>
+        <li>Swagger / OpenAPI para documentar a API</li>
+        <li>autenticação e autorização</li>
+        <li>Spring Security e login</li>
+        <li>JWT em nível básico</li>
+      </ul>
+    </section>
+
+    <!-- 41 REACT DOCKER DEPLOY -->
+    <section class="topic" id="topic-41">
+      <div class="eyebrow">41 · panorama do projeto</div>
+      <h2>React, Docker e Deploy</h2>
+      <h3>React</h3>
+      <ul class="checklist">
+        <li>componentes, props e state</li>
+        <li>hooks básicos e formulários</li>
+        <li>requisições HTTP consumindo a API</li>
+        <li>mostrar, criar, cancelar e reagendar agendamentos</li>
+      </ul>
+      <div class="flow">
+        <div class="box">React</div>
+        <div class="arrow">→</div>
+        <div class="box">HTTP</div>
+        <div class="arrow">→</div>
+        <div class="box">Spring Boot</div>
+        <div class="arrow">→</div>
+        <div class="box">JPA</div>
+        <div class="arrow">→</div>
+        <div class="box">PostgreSQL</div>
+      </div>
+      <h3>Docker e Deploy</h3>
+      <ul class="checklist">
+        <li>Dockerfile, container, imagem</li>
+        <li>Docker Compose (aplicação + banco)</li>
+        <li>backend, banco e frontend publicados</li>
+        <li>variáveis de ambiente e configuração de produção</li>
+      </ul>
+    </section>
+
+    <!-- 42 ORDEM A PARTIR DE AGORA -->
+    <section class="topic" id="topic-42">
+      <div class="eyebrow">42 · panorama do projeto</div>
+      <h2>A ordem a partir de agora</h2>
+      <ul class="roadmap">
+        <li><span class="n">▶</span> você está aqui</li>
+        <li><span class="n">1.</span> List, ArrayList e for-each</li>
+        <li><span class="n">2.</span> Collections (Set, Map) e regras com vários agendamentos</li>
+        <li><span class="n">3.</span> Exceptions</li>
+        <li><span class="n">4.</span> Interfaces</li>
+        <li><span class="n">5.</span> sistema em memória completo</li>
+        <li><span class="n">6.</span> Git / GitHub</li>
+        <li><span class="n">7.</span> SQL</li>
+        <li><span class="n">8.</span> HTTP e REST</li>
+        <li><span class="n">9.</span> Spring Boot — Controller, Service, Repository</li>
+        <li><span class="n">10.</span> PostgreSQL + JPA / Hibernate</li>
+        <li><span class="n">11.</span> DTO, Validation e tratamento de erros</li>
+        <li><span class="n">12.</span> Testes e Swagger</li>
+        <li><span class="n">13.</span> Security</li>
+        <li><span class="n">14.</span> React</li>
+        <li><span class="n">15.</span> Docker</li>
+        <li><span class="n">16.</span> Deploy</li>
+      </ul>
+      <div class="note">Não é preciso terminar 100% de Java para começar a procurar estágio. A prioridade mínima é: Java básico/POO, List e Collections, Exceptions, Git/GitHub, SQL, HTTP, REST, Spring Boot com CRUD (Controller, Service, Repository), PostgreSQL, JPA básico, o projeto publicado no GitHub, e conseguir explicar o próprio código.</div>
+    </section>
+
     <!-- GLOSSARIO -->
     <section class="topic" id="glossario">
       <div class="eyebrow">referência rápida</div>
@@ -1128,6 +1617,12 @@ System.out.println(agendamento.getServico().getPreco());      <span class="c-com
         <div class="gterm"><dt>Classe / método abstrato</dt><dd>Uma classe que não pode ser instanciada diretamente, ou um método sem implementação que as classes filhas são obrigadas a completar.</dd></div>
         <div class="gterm"><dt>Associação / "tem um"</dt><dd>Um objeto guarda uma referência para outro objeto como atributo.</dd></div>
         <div class="gterm"><dt>Encadeamento de métodos</dt><dd>Chamar um método sobre o resultado de outro, tudo na mesma linha (ex.: <code>getCliente().getNome()</code>).</dd></div>
+        <div class="gterm"><dt>null</dt><dd>Valor especial que indica que uma referência não aponta para nenhum objeto no momento.</dd></div>
+        <div class="gterm"><dt>NullPointerException</dt><dd>Erro que ocorre ao tentar usar um método ou atributo de uma referência que está <code>null</code>.</dd></div>
+        <div class="gterm"><dt>enum</dt><dd>Um tipo que representa um conjunto fixo e limitado de valores possíveis.</dd></div>
+        <div class="gterm"><dt>LocalDateTime</dt><dd>Tipo pronto do Java para representar data e horário juntos.</dd></div>
+        <div class="gterm"><dt>DTO</dt><dd>Objeto usado para transportar dados entre a API e quem a consome, sem expor a entidade real.</dd></div>
+        <div class="gterm"><dt>JPA / Hibernate</dt><dd>Tecnologia que liga as classes Java às tabelas do banco de dados automaticamente.</dd></div>
       </dl>
     </section>
 
