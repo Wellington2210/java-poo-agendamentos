@@ -129,6 +129,26 @@
   .progressbar .track{ height:11px; border-radius:6px; background:var(--surface-2); border:1px solid var(--line); overflow:hidden; }
   .progressbar .fill{ height:100%; border-radius:6px 0 0 6px; background: linear-gradient(90deg, var(--brass-dim), var(--brass)); }
 
+  /* array / list visualization */
+  .array-viz{ display:flex; gap:10px; margin: 18px 0; flex-wrap:wrap; }
+  .array-viz .cell{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .array-viz .box{
+    min-width: 92px; height: 52px;
+    border:1px solid var(--line);
+    background: var(--surface);
+    border-radius: 8px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text);
+    padding: 0 10px;
+    text-align:center;
+  }
+  .array-viz .cell.empty .box{ color: var(--text-dim); border-style:dashed; }
+  .array-viz .cell.removed .box{ opacity:0.35; text-decoration: line-through; border-style:dashed; }
+  .array-viz .idx{ font-family:'JetBrains Mono', monospace; font-size:11px; color: var(--brass-dim); }
+  .array-viz .cell.current .box{ border-color: var(--brass); color: var(--brass); }
+
   .part-header{
     padding: 40px 64px 0;
     max-width: 880px;
@@ -381,16 +401,29 @@
       <li><a href="#topic-33"><span class="num">33</span> LocalDateTime</a></li>
       <li><a href="#topic-34"><span class="num">34</span> Agendamento atualizado</a></li>
     </ul>
+    <div class="group-label">Collections: List e ArrayList</div>
+    <ul class="navlist">
+      <li><a href="#topic-35"><span class="num">35</span> List e ArrayList</a></li>
+      <li><a href="#topic-36"><span class="num">36</span> add(), size() e índices</a></li>
+      <li><a href="#topic-37"><span class="num">37</span> get() e encadeamento</a></li>
+      <li><a href="#topic-38"><span class="num">38</span> remove() com cuidado</a></li>
+      <li><a href="#topic-39"><span class="num">39</span> for-each</a></li>
+      <li><a href="#topic-40"><span class="num">40</span> for-each + enum + if</a></li>
+      <li><a href="#topic-41"><span class="num">41</span> Mesma referência, vários agendamentos</a></li>
+      <li><a href="#topic-42"><span class="num">42</span> Lista hoje × banco depois</a></li>
+      <li><a href="#topic-43"><span class="num">43</span> Introdução a Object</a></li>
+      <li><a href="#topic-44"><span class="num">44</span> Estruturas de dados</a></li>
+    </ul>
     <div class="group-label">Panorama do projeto</div>
     <ul class="navlist">
-      <li><a href="#topic-35"><span class="num">35</span> Progresso atual</a></li>
-      <li><a href="#topic-36"><span class="num">36</span> O que falta de Java</a></li>
-      <li><a href="#topic-37"><span class="num">37</span> Sistema em memória</a></li>
-      <li><a href="#topic-38"><span class="num">38</span> Git, SQL e banco</a></li>
-      <li><a href="#topic-39"><span class="num">39</span> HTTP, REST e Spring</a></li>
-      <li><a href="#topic-40"><span class="num">40</span> Testes, Swagger, Segurança</a></li>
-      <li><a href="#topic-41"><span class="num">41</span> React, Docker e Deploy</a></li>
-      <li><a href="#topic-42"><span class="num">42</span> A ordem a partir de agora</a></li>
+      <li><a href="#topic-45"><span class="num">45</span> Progresso atual</a></li>
+      <li><a href="#topic-46"><span class="num">46</span> O que falta de Java</a></li>
+      <li><a href="#topic-47"><span class="num">47</span> Sistema em memória</a></li>
+      <li><a href="#topic-48"><span class="num">48</span> Git, SQL e banco</a></li>
+      <li><a href="#topic-49"><span class="num">49</span> HTTP, REST e Spring</a></li>
+      <li><a href="#topic-50"><span class="num">50</span> Testes, Swagger, Segurança</a></li>
+      <li><a href="#topic-51"><span class="num">51</span> React, Docker e Deploy</a></li>
+      <li><a href="#topic-52"><span class="num">52</span> A ordem a partir de agora</a></li>
       <li><a href="#glossario"><span class="num">·</span> Glossário</a></li>
     </ul>
   </nav>
@@ -402,50 +435,55 @@
       <p class="lede">Se você nunca programou orientado a objetos, comece pela seção 0. O material vai crescendo do básico (classe, objeto) até os quatro pilares da POO e a modelagem completa do projeto: Pessoa, Cliente, Profissional, Serviço e Agendamento.</p>
       <div class="journey-wrap">
         <svg viewBox="0 0 960 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa do trajeto de aprendizado, da linguagem Java até o projeto completo">
-          <path class="journey-path done" d="M60,150 C120,150 120,70 180,70 C240,70 240,150 300,150" />
-          <path class="journey-path" d="M300,150 C360,150 360,70 420,70 C480,70 480,150 540,150 C600,150 600,70 660,70 C720,70 720,150 780,150 C840,150 840,70 900,70" />
+          <path class="journey-path done" d="M60,150 C112.5,150 112.5,70 165,70 C217.5,70 217.5,150 270,150" />
+          <path class="journey-path" d="M270,150 C322.5,150 322.5,70 375,70 C427.5,70 427.5,150 480,150 C532.5,150 532.5,70 585,70 C637.5,70 637.5,150 690,150 C742.5,150 742.5,70 795,70 C847.5,70 847.5,150 900,150" />
 
           <g class="journey-node done">
-            <circle class="ring" cx="60" cy="150" r="16"></circle>
+            <circle class="ring" cx="60" cy="150" r="15"></circle>
             <text class="num" x="60" y="155" text-anchor="middle">1</text>
             <text class="lbl" x="60" y="188" text-anchor="middle">Java</text>
           </g>
           <g class="journey-node done">
-            <circle class="ring" cx="180" cy="70" r="16"></circle>
-            <text class="num" x="180" y="75" text-anchor="middle">2</text>
-            <text class="lbl" x="180" y="42" text-anchor="middle">POO</text>
+            <circle class="ring" cx="165" cy="70" r="15"></circle>
+            <text class="num" x="165" y="75" text-anchor="middle">2</text>
+            <text class="lbl" x="165" y="42" text-anchor="middle">POO</text>
           </g>
           <g class="journey-node current">
-            <circle class="journey-pulse" cx="300" cy="150" r="16"></circle>
-            <circle class="ring" cx="300" cy="150" r="16"></circle>
-            <text class="num" x="300" y="155" text-anchor="middle">3</text>
-            <text class="lbl" x="300" y="188" text-anchor="middle">Sistema em memória</text>
-            <text class="journey-here" x="300" y="204" text-anchor="middle">você está aqui</text>
+            <circle class="journey-pulse" cx="270" cy="150" r="15"></circle>
+            <circle class="ring" cx="270" cy="150" r="15"></circle>
+            <text class="num" x="270" y="155" text-anchor="middle">3</text>
+            <text class="lbl" x="270" y="188" text-anchor="middle">Collections</text>
+            <text class="journey-here" x="270" y="204" text-anchor="middle">você está aqui</text>
           </g>
           <g class="journey-node">
-            <circle class="ring" cx="420" cy="70" r="16"></circle>
-            <text class="num" x="420" y="75" text-anchor="middle">4</text>
-            <text class="lbl" x="420" y="42" text-anchor="middle">HTTP / REST</text>
+            <circle class="ring" cx="375" cy="70" r="15"></circle>
+            <text class="num" x="375" y="75" text-anchor="middle">4</text>
+            <text class="lbl" x="375" y="42" text-anchor="middle">Sistema em memória</text>
           </g>
           <g class="journey-node">
-            <circle class="ring" cx="540" cy="150" r="16"></circle>
-            <text class="num" x="540" y="155" text-anchor="middle">5</text>
-            <text class="lbl" x="540" y="188" text-anchor="middle">Spring Boot</text>
+            <circle class="ring" cx="480" cy="150" r="15"></circle>
+            <text class="num" x="480" y="155" text-anchor="middle">5</text>
+            <text class="lbl" x="480" y="188" text-anchor="middle">HTTP / REST</text>
           </g>
           <g class="journey-node">
-            <circle class="ring" cx="660" cy="70" r="16"></circle>
-            <text class="num" x="660" y="75" text-anchor="middle">6</text>
-            <text class="lbl" x="660" y="42" text-anchor="middle">Banco de dados</text>
+            <circle class="ring" cx="585" cy="70" r="15"></circle>
+            <text class="num" x="585" y="75" text-anchor="middle">6</text>
+            <text class="lbl" x="585" y="42" text-anchor="middle">Spring Boot</text>
           </g>
           <g class="journey-node">
-            <circle class="ring" cx="780" cy="150" r="16"></circle>
-            <text class="num" x="780" y="155" text-anchor="middle">7</text>
-            <text class="lbl" x="780" y="188" text-anchor="middle">React</text>
+            <circle class="ring" cx="690" cy="150" r="15"></circle>
+            <text class="num" x="690" y="155" text-anchor="middle">7</text>
+            <text class="lbl" x="690" y="188" text-anchor="middle">Banco de dados</text>
           </g>
           <g class="journey-node">
-            <circle class="ring" cx="900" cy="70" r="16"></circle>
-            <text class="num" x="900" y="75" text-anchor="middle">8</text>
-            <text class="lbl" x="900" y="42" text-anchor="middle">Projeto completo</text>
+            <circle class="ring" cx="795" cy="70" r="15"></circle>
+            <text class="num" x="795" y="75" text-anchor="middle">8</text>
+            <text class="lbl" x="795" y="42" text-anchor="middle">React</text>
+          </g>
+          <g class="journey-node">
+            <circle class="ring" cx="900" cy="150" r="15"></circle>
+            <text class="num" x="900" y="155" text-anchor="middle">9</text>
+            <text class="lbl" x="900" y="188" text-anchor="middle">Projeto completo</text>
           </g>
         </svg>
       </div>
@@ -1351,78 +1389,268 @@ Agendamento
       </div>
     </section>
 
-    <!-- PARTE PANORAMA -->
+    <!-- PARTE COLLECTIONS -->
     <div class="part-header">
       <div class="part-num">PARTE 10</div>
+      <h1>Collections: List e ArrayList</h1>
+      <p>Até agora cada agendamento vivia sozinho, numa variável separada. Chegou a hora de guardar vários de uma vez — clientes, profissionais, agendamentos — dentro de uma única coleção.</p>
+    </div>
+
+    <!-- 35 LIST/ARRAYLIST -->
+    <section class="topic part-open" id="topic-35">
+      <div class="eyebrow">35 · collections</div>
+      <h2>List e ArrayList</h2>
+      <p>Uma <code>List</code> serve para guardar vários elementos do mesmo tipo, em ordem.</p>
+<div class="code"><span class="c-type">List</span>&lt;<span class="c-type">Agendamento</span>&gt; agendamentos;</div>
+      <p>Leia: <em>"uma lista que guarda objetos do tipo Agendamento."</em> Criamos a lista assim:</p>
+<div class="code"><span class="c-kw">import</span> java.util.List;
+<span class="c-kw">import</span> java.util.ArrayList;
+
+<span class="c-type">List</span>&lt;<span class="c-type">Agendamento</span>&gt; agendamentos = <span class="c-kw">new</span> <span class="c-type">ArrayList</span>&lt;&gt;();</div>
+      <div class="breakdown">
+        <div class="breakdown-row"><div class="piece">List&lt;Agendamento&gt;</div><div class="expl">o tipo da variável — uma lista que só aceita objetos <code>Agendamento</code> dentro dela.</div></div>
+        <div class="breakdown-row"><div class="piece">agendamentos</div><div class="expl">o nome que demos à lista.</div></div>
+        <div class="breakdown-row"><div class="piece">new ArrayList&lt;&gt;()</div><div class="expl">cria a lista de fato — vazia, pronta para receber itens.</div></div>
+      </div>
+      <div class="analogy">
+        <span class="lbl">PENSE ASSIM</span>
+        Se <code>List</code> é a ideia geral de "uma fila de fichas", <code>ArrayList</code> é o tipo específico de pasta que estamos usando para organizar essa fila. Por enquanto, pense em <code>List</code> como o rótulo e <code>ArrayList</code> como a implementação concreta que escolhemos — a diferença entre interface e implementação fica mais clara mais adiante.
+      </div>
+    </section>
+
+    <!-- 36 ADD/SIZE/INDICES -->
+    <section class="topic" id="topic-36">
+      <div class="eyebrow">36 · collections</div>
+      <h2>add(), size() e índices</h2>
+      <p><code>add()</code> coloca um elemento no fim da lista. As posições dentro de uma lista começam a contar do <strong>0</strong>, não do 1 — isso é chamado de índice.</p>
+<div class="code">agendamentos.add(agendamentoWellington);
+agendamentos.add(agendamentoBruno);
+agendamentos.add(agendamentoLucas);</div>
+      <div class="array-viz">
+        <div class="cell"><div class="box">Wellington</div><div class="idx">[0]</div></div>
+        <div class="cell"><div class="box">Bruno</div><div class="idx">[1]</div></div>
+        <div class="cell"><div class="box">Lucas</div><div class="idx">[2]</div></div>
+      </div>
+      <p><code>size()</code> devolve quantos elementos existem na lista agora:</p>
+<div class="code"><span class="c-kw">int</span> quantidade = agendamentos.size();
+<span class="c-com">// quantidade = 3</span></div>
+    </section>
+
+    <!-- 37 GET/ENCADEAMENTO -->
+    <section class="topic" id="topic-37">
+      <div class="eyebrow">37 · collections</div>
+      <h2>get() e encadeamento</h2>
+      <p><code>get(posição)</code> devolve o elemento que está naquele índice.</p>
+<div class="code"><span class="c-type">Agendamento</span> primeiro = agendamentos.get(0);
+<span class="c-com">// primeiro → o Agendamento do Wellington</span></div>
+      <p>E como já sabemos encadear métodos (seção 27), podemos ir direto do índice até um dado específico, tudo numa linha:</p>
+<div class="code">agendamentos.get(0).getCliente().getNome();</div>
+      <div class="flow">
+        <div class="box">Lista</div>
+        <div class="arrow">→</div>
+        <div class="box">get(0)</div>
+        <div class="arrow">→</div>
+        <div class="box">Agendamento</div>
+        <div class="arrow">→</div>
+        <div class="box">getCliente()</div>
+        <div class="arrow">→</div>
+        <div class="box">getNome()</div>
+        <div class="arrow">→</div>
+        <div class="box">"Wellington"</div>
+      </div>
+    </section>
+
+    <!-- 38 REMOVE -->
+    <section class="topic" id="topic-38">
+      <div class="eyebrow">38 · collections</div>
+      <h2>remove() e cuidado com posições</h2>
+      <p><code>remove()</code> aceita um índice ou o próprio objeto:</p>
+<div class="code">agendamentos.remove(1);
+<span class="c-com">// remove pela posição 1 (Bruno)</span>
+
+agendamentos.remove(agendamentoLucas);
+<span class="c-com">// remove pedindo aquele objeto específico</span></div>
+      <div class="array-viz">
+        <div class="cell"><div class="box">Wellington</div><div class="idx">[0]</div></div>
+        <div class="cell removed"><div class="box">Bruno</div><div class="idx">[1]</div></div>
+        <div class="cell"><div class="box">Lucas</div><div class="idx">[1] agora</div></div>
+      </div>
+      <p class="sub">Repare: depois de remover o índice 1, o que era <code>[2]</code> (Lucas) desliza e passa a ser <code>[1]</code> — a lista se reorganiza automaticamente.</p>
+      <div class="note"><b>Cuidado:</b> pedir uma posição que não existe (<code>agendamentos.get(10)</code> numa lista de 3 itens) gera um <code>IndexOutOfBoundsException</code> — parecido em espírito com o <code>NullPointerException</code>, mas para posições inválidas em vez de referências vazias.</div>
+    </section>
+
+    <!-- 39 FOR-EACH -->
+    <section class="topic" id="topic-39">
+      <div class="eyebrow">39 · collections</div>
+      <h2>for-each</h2>
+      <p>Em vez de chamar <code>get(0)</code>, <code>get(1)</code>, <code>get(2)</code> manualmente, o <code>for-each</code> percorre a lista inteira sozinho.</p>
+<div class="code"><span class="c-kw">for</span> (<span class="c-type">Agendamento</span> item : agendamentos) {
+    <span class="c-com">// item recebe, um de cada vez, cada Agendamento da lista</span>
+}</div>
+      <p>Leia: <em>"para cada Agendamento dentro de agendamentos, coloque temporariamente esse objeto em item."</em></p>
+      <div class="flow">
+        <div class="box">1ª volta: item → Wellington</div>
+        <div class="arrow">→</div>
+        <div class="box">2ª volta: item → Bruno</div>
+        <div class="arrow">→</div>
+        <div class="box">3ª volta: item → Lucas</div>
+      </div>
+      <div class="note"><b>Erro clássico:</b> um ponto e vírgula sobrando depois do <code>for-each</code> — <code>for (...) ; { }</code> — encerra o laço ali mesmo, e o bloco entre chaves nunca roda de verdade dentro dele. Fique de olho nesse <code>;</code> a mais.</div>
+    </section>
+
+    <!-- 40 FOREACH+ENUM+IF -->
+    <section class="topic" id="topic-40">
+      <div class="eyebrow">40 · collections</div>
+      <h2>for-each + enum + if</h2>
+      <p>Agora dá pra combinar tudo que já vimos: percorrer a lista, olhar o status de cada agendamento, e agir só nos que interessam.</p>
+<div class="code"><span class="c-kw">for</span> (<span class="c-type">Agendamento</span> item : agendamentos) {
+
+    <span class="c-kw">if</span> (item.getStatus() == StatusAgendamento.AGENDADO) {
+        System.out.println(item.getCliente().getNome());
+    }
+}</div>
+      <p class="sub">Esse pequeno trecho já junta <code>List</code>, <code>for-each</code>, objetos, getter, <code>enum</code> e <code>if</code> — praticamente tudo que estudamos até aqui, trabalhando junto.</p>
+    </section>
+
+    <!-- 41 MESMA REFERENCIA -->
+    <section class="topic" id="topic-41">
+      <div class="eyebrow">41 · collections</div>
+      <h2>Mesma referência, vários agendamentos</h2>
+      <p>Não precisamos criar um objeto <code>Profissional</code> novo pra cada agendamento da Marina — o mesmo objeto pode ser reaproveitado em vários agendamentos diferentes.</p>
+<div class="code"><span class="c-type">Profissional</span> marina = <span class="c-kw">new</span> <span class="c-type">Profissional</span>(<span class="c-str">"Marina"</span>, <span class="c-str">"marina@gmail.com"</span>);
+
+<span class="c-type">Agendamento</span> a1 = <span class="c-kw">new</span> <span class="c-type">Agendamento</span>(cliente1, servico1, marina, dataHora1);
+<span class="c-type">Agendamento</span> a2 = <span class="c-kw">new</span> <span class="c-type">Agendamento</span>(cliente2, servico2, marina, dataHora2);</div>
+      <div class="diagram">
+Agendamento Wellington ──┐
+                         │
+Agendamento Bruno ───────┼──► Marina
+                         │
+Agendamento Lucas ───────┘
+      </div>
+      <p class="sub">Os três agendamentos guardam referências diferentes para o mesmo objeto <code>Marina</code> — reforçando o que vimos na seção 26: associação guarda um "endereço", não uma cópia.</p>
+    </section>
+
+    <!-- 42 LISTA X BANCO -->
+    <section class="topic" id="topic-42">
+      <div class="eyebrow">42 · collections</div>
+      <h2>Lista hoje × banco de dados depois</h2>
+      <p>Hoje criamos os objetos manualmente e usamos <code>add()</code> pra colocá-los numa lista. Mais adiante, quando o banco de dados entrar em cena, quem vai preencher essa lista será o próprio banco:</p>
+<div class="code"><span class="c-com">// hoje:</span>
+<span class="c-type">List</span>&lt;<span class="c-type">Agendamento</span>&gt; agendamentos = <span class="c-kw">new</span> <span class="c-type">ArrayList</span>&lt;&gt;();
+agendamentos.add(agendamento);
+
+<span class="c-com">// no futuro, com Spring + JPA:</span>
+<span class="c-type">List</span>&lt;<span class="c-type">Agendamento</span>&gt; agendamentos = agendamentoRepository.findAll();</div>
+      <p class="sub">Ainda não estudamos <code>Repository</code> nem JPA — esse exemplo só serve pra mostrar por que aprender <code>List</code> agora continua valendo depois: o formato final (uma lista de objetos <code>Agendamento</code>) é o mesmo, só muda de onde os dados vêm.</p>
+    </section>
+
+    <!-- 43 OBJECT -->
+    <section class="topic" id="topic-43">
+      <div class="eyebrow">43 · collections</div>
+      <h2>Introdução a Object</h2>
+      <p><code>Object</code> é a classe que fica no topo de toda hierarquia em Java. Quando você escreve <code>public class Servico { }</code>, é como se por baixo dos panos existisse:</p>
+<div class="code"><span class="c-kw">public class</span> <span class="c-type">Servico</span> <span class="c-kw">extends</span> <span class="c-type">Object</span> {
+}</div>
+      <div class="diagram">
+<span class="root">Object</span>
+├── Pessoa
+│   ├── Cliente
+│   └── Profissional
+│
+├── Servico
+└── Agendamento
+      </div>
+      <p>É por causa disso que todo objeto Java, mesmo sem você escrever nada a mais, já vem com alguns métodos de fábrica: <code>toString()</code>, <code>equals()</code>, <code>hashCode()</code> e <code>getClass()</code>.</p>
+      <div class="note">Ainda não vamos fundo nesses métodos — essa é só a introdução. <code>toString()</code>, <code>equals()</code> e <code>hashCode()</code> ganham seções próprias mais adiante, logo depois da busca dentro de uma lista.</div>
+    </section>
+
+    <!-- 44 ESTRUTURAS DE DADOS -->
+    <section class="topic" id="topic-44">
+      <div class="eyebrow">44 · collections</div>
+      <h2>Estruturas de dados</h2>
+      <p>Estruturas de dados estudam formas de organizar, guardar e acessar informação. A gente já começou, sem perceber, com <code>List</code> e <code>ArrayList</code>.</p>
+      <ul class="roadmap">
+        <li><span class="n">✓</span> Array / List / ArrayList</li>
+        <li><span class="n">→</span> Set / HashSet</li>
+        <li><span class="n">→</span> Map / HashMap</li>
+        <li><span class="n">→</span> buscas</li>
+        <li><span class="n">→</span> ordenação</li>
+        <li><span class="n">→</span> Big O básico</li>
+      </ul>
+      <p class="sub">O assunto completo é bem maior (LinkedList, filas, pilhas, árvores, grafos...), mas para back-end essa é a ordem de prioridade que realmente importa no dia a dia.</p>
+    </section>
+
+    <!-- PARTE PANORAMA -->
+    <div class="part-header">
+      <div class="part-num">PARTE 11</div>
       <h1>Panorama do projeto</h1>
       <p>Um raio-x honesto de onde o projeto está agora, e tudo que ainda falta percorrer até um sistema completo, publicado e pronto pra mostrar num processo seletivo.</p>
     </div>
 
     <!-- 35 PROGRESSO -->
-    <section class="topic part-open" id="topic-35">
-      <div class="eyebrow">35 · panorama do projeto</div>
+    <section class="topic part-open" id="topic-45">
+      <div class="eyebrow">45 · panorama do projeto</div>
       <h2>Progresso atual</h2>
       <p>Estimativas para acompanhar o avanço — vale atualizar conforme os tópicos forem sendo concluídos de verdade.</p>
       <div class="progressbar">
-        <div class="plabel"><b>Java básico + POO</b><span>≈ 70%</span></div>
-        <div class="track"><div class="fill" style="width:70%"></div></div>
+        <div class="plabel"><b>Java básico + POO</b><span>≈ 75%</span></div>
+        <div class="track"><div class="fill" style="width:75%"></div></div>
       </div>
       <div class="progressbar">
-        <div class="plabel"><b>Projeto completo</b><span>≈ 20%</span></div>
-        <div class="track"><div class="fill" style="width:20%"></div></div>
+        <div class="plabel"><b>Projeto completo</b><span>≈ 22%</span></div>
+        <div class="track"><div class="fill" style="width:22%"></div></div>
       </div>
       <div class="progressbar">
-        <div class="plabel"><b>Preparação para estágio back-end</b><span>≈ 35%</span></div>
-        <div class="track"><div class="fill" style="width:35%"></div></div>
+        <div class="plabel"><b>Preparação para estágio back-end</b><span>≈ 40%</span></div>
+        <div class="track"><div class="fill" style="width:40%"></div></div>
       </div>
       <div class="progressbar">
-        <div class="plabel"><b>Preparação para júnior back-end</b><span>≈ 20%</span></div>
-        <div class="track"><div class="fill" style="width:20%"></div></div>
+        <div class="plabel"><b>Preparação para júnior back-end</b><span>≈ 22%</span></div>
+        <div class="track"><div class="fill" style="width:22%"></div></div>
       </div>
-      <p class="sub">Note a diferença entre "Java básico + POO" (bem avançado) e "projeto completo" (ainda no início) — dominar a linguagem é só a primeira parte do caminho até o sistema publicado.</p>
+      <p class="sub">Essas porcentagens não são nota — são só um jeito de enxergar o caminho. Repare que "Java básico + POO" já está bem avançado, enquanto "projeto completo" segue no começo: dominar a linguagem é só a primeira etapa.</p>
     </section>
 
-    <!-- 36 O QUE FALTA DE JAVA -->
-    <section class="topic" id="topic-36">
-      <div class="eyebrow">36 · panorama do projeto</div>
+    <!-- 46 O QUE FALTA DE JAVA -->
+    <section class="topic" id="topic-46">
+      <div class="eyebrow">46 · panorama do projeto</div>
       <h2>O que falta de Java para concluir a base</h2>
-      <h3>Collections</h3>
+      <h3>Collections (continuação)</h3>
       <ul class="checklist">
-        <li>List / ArrayList</li>
-        <li>add(), get(), size(), remove()</li>
-        <li>contains() e percorrer listas</li>
-        <li>lista de objetos (não só de texto)</li>
+        <li>busca dentro de uma List</li>
+        <li>contains()</li>
+        <li>atualizar elementos existentes</li>
         <li>Set / HashSet</li>
         <li>Map / HashMap</li>
-        <li>for-each percorrendo objetos</li>
-        <li>Generics básicos (List&lt;Agendamento&gt;)</li>
+        <li>generics básicos</li>
       </ul>
-      <h3>static, final e Strings</h3>
+      <h3>Object, static, final e Strings</h3>
       <ul class="checklist">
+        <li>Object em profundidade</li>
+        <li>toString()</li>
+        <li>equals()</li>
+        <li>hashCode()</li>
         <li>static (atributo/método da classe × do objeto)</li>
         <li>final (valores que não devem mudar)</li>
-        <li>equals(), equalsIgnoreCase(), contains()</li>
-        <li>substring(), split(), replace(), trim()</li>
-        <li>isEmpty(), isBlank()</li>
-        <li>equals(), hashCode() e toString() de objetos</li>
+        <li>Strings mais a fundo</li>
       </ul>
       <h3>Exceptions, Interfaces e prática</h3>
       <ul class="checklist">
         <li>Exception, RuntimeException</li>
-        <li>try, catch, finally</li>
-        <li>throw, throws</li>
+        <li>try, catch, finally, throw, throws</li>
         <li>exceptions personalizadas</li>
         <li>interface e implements</li>
         <li>debugging: breakpoint e stack trace</li>
-        <li>organização em camadas (domain, service, repository...)</li>
       </ul>
     </section>
 
     <!-- 37 SISTEMA EM MEMORIA -->
-    <section class="topic" id="topic-37">
-      <div class="eyebrow">37 · panorama do projeto</div>
+    <section class="topic" id="topic-47">
+      <div class="eyebrow">47 · panorama do projeto</div>
       <h2>Sistema em memória da barbearia</h2>
       <p>Antes do Spring Boot, a meta é fazer o sistema funcionar inteiro só com Java puro, guardando tudo na memória (sem banco de dados ainda).</p>
+      <p class="sub">A parte de guardar vários agendamentos já começou — é exatamente o <code>List&lt;Agendamento&gt;</code> que acabamos de estudar. O que falta agora é organizar isso em cadastros completos, com busca e regras de negócio de verdade.</p>
       <h3>Funcionalidades que faltam</h3>
       <ul class="checklist">
         <li>armazenar vários clientes, profissionais e serviços</li>
@@ -1444,8 +1672,8 @@ Agendamento
     </section>
 
     <!-- 38 GIT SQL BANCO -->
-    <section class="topic" id="topic-38">
-      <div class="eyebrow">38 · panorama do projeto</div>
+    <section class="topic" id="topic-48">
+      <div class="eyebrow">48 · panorama do projeto</div>
       <h2>Git, SQL e banco de dados</h2>
       <h3>Git e GitHub</h3>
       <ul class="checklist">
@@ -1477,8 +1705,8 @@ agendamento
     </section>
 
     <!-- 39 HTTP REST SPRING -->
-    <section class="topic" id="topic-39">
-      <div class="eyebrow">39 · panorama do projeto</div>
+    <section class="topic" id="topic-49">
+      <div class="eyebrow">49 · panorama do projeto</div>
       <h2>HTTP, REST e Spring Boot</h2>
       <h3>HTTP e REST</h3>
       <ul class="checklist">
@@ -1520,8 +1748,8 @@ DELETE /agendamentos/10</span></div>
     </section>
 
     <!-- 40 TESTES SWAGGER SEGURANCA -->
-    <section class="topic" id="topic-40">
-      <div class="eyebrow">40 · panorama do projeto</div>
+    <section class="topic" id="topic-50">
+      <div class="eyebrow">50 · panorama do projeto</div>
       <h2>Testes, Swagger e Segurança</h2>
       <ul class="checklist">
         <li>teste unitário com JUnit</li>
@@ -1535,8 +1763,8 @@ DELETE /agendamentos/10</span></div>
     </section>
 
     <!-- 41 REACT DOCKER DEPLOY -->
-    <section class="topic" id="topic-41">
-      <div class="eyebrow">41 · panorama do projeto</div>
+    <section class="topic" id="topic-51">
+      <div class="eyebrow">51 · panorama do projeto</div>
       <h2>React, Docker e Deploy</h2>
       <h3>React</h3>
       <ul class="checklist">
@@ -1566,27 +1794,28 @@ DELETE /agendamentos/10</span></div>
     </section>
 
     <!-- 42 ORDEM A PARTIR DE AGORA -->
-    <section class="topic" id="topic-42">
-      <div class="eyebrow">42 · panorama do projeto</div>
+    <section class="topic" id="topic-52">
+      <div class="eyebrow">52 · panorama do projeto</div>
       <h2>A ordem a partir de agora</h2>
       <ul class="roadmap">
         <li><span class="n">▶</span> você está aqui</li>
-        <li><span class="n">1.</span> List, ArrayList e for-each</li>
-        <li><span class="n">2.</span> Collections (Set, Map) e regras com vários agendamentos</li>
-        <li><span class="n">3.</span> Exceptions</li>
-        <li><span class="n">4.</span> Interfaces</li>
-        <li><span class="n">5.</span> sistema em memória completo</li>
-        <li><span class="n">6.</span> Git / GitHub</li>
-        <li><span class="n">7.</span> SQL</li>
-        <li><span class="n">8.</span> HTTP e REST</li>
-        <li><span class="n">9.</span> Spring Boot — Controller, Service, Repository</li>
-        <li><span class="n">10.</span> PostgreSQL + JPA / Hibernate</li>
-        <li><span class="n">11.</span> DTO, Validation e tratamento de erros</li>
-        <li><span class="n">12.</span> Testes e Swagger</li>
-        <li><span class="n">13.</span> Security</li>
-        <li><span class="n">14.</span> React</li>
-        <li><span class="n">15.</span> Docker</li>
-        <li><span class="n">16.</span> Deploy</li>
+        <li><span class="n">1.</span> busca dentro de uma List, contains()</li>
+        <li><span class="n">2.</span> Object, toString(), equals(), hashCode()</li>
+        <li><span class="n">3.</span> Set / HashSet, Map / HashMap</li>
+        <li><span class="n">4.</span> Exceptions</li>
+        <li><span class="n">5.</span> Interfaces</li>
+        <li><span class="n">6.</span> sistema em memória completo</li>
+        <li><span class="n">7.</span> Git / GitHub</li>
+        <li><span class="n">8.</span> SQL</li>
+        <li><span class="n">9.</span> HTTP e REST</li>
+        <li><span class="n">10.</span> Spring Boot — Controller, Service, Repository</li>
+        <li><span class="n">11.</span> Banco de dados — PostgreSQL + JPA / Hibernate</li>
+        <li><span class="n">12.</span> DTO, Validation e tratamento de erros</li>
+        <li><span class="n">13.</span> Testes e Swagger</li>
+        <li><span class="n">14.</span> Security</li>
+        <li><span class="n">15.</span> React</li>
+        <li><span class="n">16.</span> Docker</li>
+        <li><span class="n">17.</span> Deploy</li>
       </ul>
       <div class="note">Não é preciso terminar 100% de Java para começar a procurar estágio. A prioridade mínima é: Java básico/POO, List e Collections, Exceptions, Git/GitHub, SQL, HTTP, REST, Spring Boot com CRUD (Controller, Service, Repository), PostgreSQL, JPA básico, o projeto publicado no GitHub, e conseguir explicar o próprio código.</div>
     </section>
@@ -1623,6 +1852,11 @@ DELETE /agendamentos/10</span></div>
         <div class="gterm"><dt>LocalDateTime</dt><dd>Tipo pronto do Java para representar data e horário juntos.</dd></div>
         <div class="gterm"><dt>DTO</dt><dd>Objeto usado para transportar dados entre a API e quem a consome, sem expor a entidade real.</dd></div>
         <div class="gterm"><dt>JPA / Hibernate</dt><dd>Tecnologia que liga as classes Java às tabelas do banco de dados automaticamente.</dd></div>
+        <div class="gterm"><dt>List / ArrayList</dt><dd>Uma coleção ordenada que guarda vários elementos do mesmo tipo; <code>ArrayList</code> é a implementação mais comum de <code>List</code>.</dd></div>
+        <div class="gterm"><dt>Índice</dt><dd>A posição de um elemento dentro de uma lista, começando sempre do 0.</dd></div>
+        <div class="gterm"><dt>for-each</dt><dd>Estrutura de repetição que percorre todos os elementos de uma lista, um de cada vez.</dd></div>
+        <div class="gterm"><dt>IndexOutOfBoundsException</dt><dd>Erro que ocorre ao pedir uma posição que não existe dentro de uma lista.</dd></div>
+        <div class="gterm"><dt>Object</dt><dd>A classe que fica no topo de toda hierarquia em Java; todas as classes herdam dela, mesmo sem <code>extends</code> explícito.</dd></div>
       </dl>
     </section>
 
