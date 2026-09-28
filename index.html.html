@@ -401,29 +401,37 @@
       <li><a href="#topic-33"><span class="num">33</span> LocalDateTime</a></li>
       <li><a href="#topic-34"><span class="num">34</span> Agendamento atualizado</a></li>
     </ul>
+    <div class="group-label">Arrays e matrizes</div>
+    <ul class="navlist">
+      <li><a href="#topic-35"><span class="num">35</span> Vetores (arrays)</a></li>
+      <li><a href="#topic-36"><span class="num">36</span> Matrizes</a></li>
+    </ul>
     <div class="group-label">Collections: List e ArrayList</div>
     <ul class="navlist">
-      <li><a href="#topic-35"><span class="num">35</span> List e ArrayList</a></li>
-      <li><a href="#topic-36"><span class="num">36</span> add(), size() e índices</a></li>
-      <li><a href="#topic-37"><span class="num">37</span> get() e encadeamento</a></li>
-      <li><a href="#topic-38"><span class="num">38</span> remove() com cuidado</a></li>
-      <li><a href="#topic-39"><span class="num">39</span> for-each</a></li>
-      <li><a href="#topic-40"><span class="num">40</span> for-each + enum + if</a></li>
-      <li><a href="#topic-41"><span class="num">41</span> Mesma referência, vários agendamentos</a></li>
-      <li><a href="#topic-42"><span class="num">42</span> Lista hoje × banco depois</a></li>
-      <li><a href="#topic-43"><span class="num">43</span> Introdução a Object</a></li>
-      <li><a href="#topic-44"><span class="num">44</span> Estruturas de dados</a></li>
+      <li><a href="#topic-37"><span class="num">37</span> List e ArrayList</a></li>
+      <li><a href="#topic-38"><span class="num">38</span> add(), size() e índices</a></li>
+      <li><a href="#topic-39"><span class="num">39</span> get() e encadeamento</a></li>
+      <li><a href="#topic-40"><span class="num">40</span> remove() com cuidado</a></li>
+      <li><a href="#topic-41"><span class="num">41</span> for-each</a></li>
+      <li><a href="#topic-42"><span class="num">42</span> for-each + enum + if</a></li>
+      <li><a href="#topic-43"><span class="num">43</span> Mesma referência, vários agendamentos</a></li>
+      <li><a href="#topic-44"><span class="num">44</span> Lista hoje × banco depois</a></li>
+      <li><a href="#topic-45"><span class="num">45</span> Array × List</a></li>
+      <li><a href="#topic-46"><span class="num">46</span> Wrapper Classes</a></li>
+      <li><a href="#topic-47"><span class="num">47</span> Boxing, autoboxing e unboxing</a></li>
+      <li><a href="#topic-48"><span class="num">48</span> Introdução a Object</a></li>
+      <li><a href="#topic-49"><span class="num">49</span> Estruturas de dados</a></li>
     </ul>
     <div class="group-label">Panorama do projeto</div>
     <ul class="navlist">
-      <li><a href="#topic-45"><span class="num">45</span> Progresso atual</a></li>
-      <li><a href="#topic-46"><span class="num">46</span> O que falta de Java</a></li>
-      <li><a href="#topic-47"><span class="num">47</span> Sistema em memória</a></li>
-      <li><a href="#topic-48"><span class="num">48</span> Git, SQL e banco</a></li>
-      <li><a href="#topic-49"><span class="num">49</span> HTTP, REST e Spring</a></li>
-      <li><a href="#topic-50"><span class="num">50</span> Testes, Swagger, Segurança</a></li>
-      <li><a href="#topic-51"><span class="num">51</span> React, Docker e Deploy</a></li>
-      <li><a href="#topic-52"><span class="num">52</span> A ordem a partir de agora</a></li>
+      <li><a href="#topic-50"><span class="num">50</span> Progresso atual</a></li>
+      <li><a href="#topic-51"><span class="num">51</span> O que falta de Java</a></li>
+      <li><a href="#topic-52"><span class="num">52</span> Sistema em memória</a></li>
+      <li><a href="#topic-53"><span class="num">53</span> Git, SQL e banco</a></li>
+      <li><a href="#topic-54"><span class="num">54</span> HTTP, REST e Spring</a></li>
+      <li><a href="#topic-55"><span class="num">55</span> Testes, Swagger, Segurança</a></li>
+      <li><a href="#topic-56"><span class="num">56</span> React, Docker e Deploy</a></li>
+      <li><a href="#topic-57"><span class="num">57</span> A ordem a partir de agora</a></li>
       <li><a href="#glossario"><span class="num">·</span> Glossário</a></li>
     </ul>
   </nav>
@@ -1389,16 +1397,75 @@ Agendamento
       </div>
     </section>
 
-    <!-- PARTE COLLECTIONS -->
+    <!-- PARTE ARRAYS -->
     <div class="part-header">
       <div class="part-num">PARTE 10</div>
+      <h1>Arrays e matrizes</h1>
+      <p>Antes de chegar em <code>List</code>, vale conhecer a estrutura mais crua de todas: o array — uma sequência de posições de tamanho fixo, direto na memória.</p>
+    </div>
+
+    <!-- 35 VETORES -->
+    <section class="topic part-open" id="topic-35">
+      <div class="eyebrow">35 · arrays e matrizes</div>
+      <h2>Vetores (arrays)</h2>
+      <p>Um vetor é um <strong>array de uma dimensão</strong> — um bloco de posições reservado de uma vez, com tamanho fixo desde a criação.</p>
+<div class="code"><span class="c-kw">int</span>[] numeros = <span class="c-kw">new</span> <span class="c-kw">int</span>[3];</div>
+      <p>Isso cria três posições vazias:</p>
+      <div class="array-viz">
+        <div class="cell empty"><div class="box">0</div><div class="idx">[0]</div></div>
+        <div class="cell empty"><div class="box">0</div><div class="idx">[1]</div></div>
+        <div class="cell empty"><div class="box">0</div><div class="idx">[2]</div></div>
+      </div>
+      <p>Preenchendo cada posição pelo índice:</p>
+<div class="code">numeros[0] = 10;
+numeros[1] = 20;
+numeros[2] = 30;</div>
+      <div class="array-viz">
+        <div class="cell"><div class="box">10</div><div class="idx">[0]</div></div>
+        <div class="cell"><div class="box">20</div><div class="idx">[1]</div></div>
+        <div class="cell"><div class="box">30</div><div class="idx">[2]</div></div>
+      </div>
+      <p>Ou já criando o vetor preenchido de uma vez:</p>
+<div class="code"><span class="c-kw">int</span>[] numeros = {10, 20, 30};
+System.out.println(numeros[0]);
+<span class="c-com">// 10</span></div>
+      <div class="note"><b>A característica mais importante:</b> o tamanho de um array é fixo desde a criação — um <code>int[3]</code> nunca vira um <code>int[4]</code>. É bem diferente de uma <code>ArrayList</code>, que cresce conforme você chama <code>add()</code>.</div>
+    </section>
+
+    <!-- 36 MATRIZES -->
+    <section class="topic" id="topic-36">
+      <div class="eyebrow">36 · arrays e matrizes</div>
+      <h2>Matrizes</h2>
+      <p>Uma matriz é só um array com mais de uma dimensão — na prática, um array de arrays.</p>
+<div class="code"><span class="c-kw">int</span>[][] matriz = <span class="c-kw">new</span> <span class="c-kw">int</span>[3][3];</div>
+      <p>Acessar uma posição pede duas coordenadas — linha e coluna:</p>
+<div class="code">matriz[0][2];
+<span class="c-com">// linha 0, coluna 2</span></div>
+      <p>Também dá pra criar já preenchida:</p>
+<div class="code"><span class="c-kw">int</span>[][] matriz = {
+    {10, 20, 30},
+    {40, 50, 60},
+    {70, 80, 90}
+};</div>
+      <p>Para percorrer todos os valores, usamos um <code>for-each</code> dentro de outro — um para as linhas, outro para os números dentro de cada linha:</p>
+<div class="code"><span class="c-kw">for</span> (<span class="c-kw">int</span>[] linha : matriz) {
+    <span class="c-kw">for</span> (<span class="c-kw">int</span> numero : linha) {
+        System.out.println(numero);
+    }
+}</div>
+      <p class="sub">Leia o <code>for-each</code> de fora pra dentro: <em>"para cada linha dentro da matriz, e para cada número dentro dessa linha..."</em> — o mesmo <code>for-each</code> que já vamos usar bastante com <code>List</code>, só que aninhado duas vezes.</p>
+    </section>
+
+    <!-- PARTE COLLECTIONS -->
+    <div class="part-header">
+      <div class="part-num">PARTE 11</div>
       <h1>Collections: List e ArrayList</h1>
       <p>Até agora cada agendamento vivia sozinho, numa variável separada. Chegou a hora de guardar vários de uma vez — clientes, profissionais, agendamentos — dentro de uma única coleção.</p>
     </div>
 
-    <!-- 35 LIST/ARRAYLIST -->
-    <section class="topic part-open" id="topic-35">
-      <div class="eyebrow">35 · collections</div>
+    <!-- 37 LIST/ARRAYLIST -->
+    <section class="topic part-open" id="topic-37">
+      <div class="eyebrow">37 · collections</div>
       <h2>List e ArrayList</h2>
       <p>Uma <code>List</code> serve para guardar vários elementos do mesmo tipo, em ordem.</p>
 <div class="code"><span class="c-type">List</span>&lt;<span class="c-type">Agendamento</span>&gt; agendamentos;</div>
@@ -1419,8 +1486,8 @@ Agendamento
     </section>
 
     <!-- 36 ADD/SIZE/INDICES -->
-    <section class="topic" id="topic-36">
-      <div class="eyebrow">36 · collections</div>
+    <section class="topic" id="topic-38">
+      <div class="eyebrow">38 · collections</div>
       <h2>add(), size() e índices</h2>
       <p><code>add()</code> coloca um elemento no fim da lista. As posições dentro de uma lista começam a contar do <strong>0</strong>, não do 1 — isso é chamado de índice.</p>
 <div class="code">agendamentos.add(agendamentoWellington);
@@ -1437,8 +1504,8 @@ agendamentos.add(agendamentoLucas);</div>
     </section>
 
     <!-- 37 GET/ENCADEAMENTO -->
-    <section class="topic" id="topic-37">
-      <div class="eyebrow">37 · collections</div>
+    <section class="topic" id="topic-39">
+      <div class="eyebrow">39 · collections</div>
       <h2>get() e encadeamento</h2>
       <p><code>get(posição)</code> devolve o elemento que está naquele índice.</p>
 <div class="code"><span class="c-type">Agendamento</span> primeiro = agendamentos.get(0);
@@ -1461,8 +1528,8 @@ agendamentos.add(agendamentoLucas);</div>
     </section>
 
     <!-- 38 REMOVE -->
-    <section class="topic" id="topic-38">
-      <div class="eyebrow">38 · collections</div>
+    <section class="topic" id="topic-40">
+      <div class="eyebrow">40 · collections</div>
       <h2>remove() e cuidado com posições</h2>
       <p><code>remove()</code> aceita um índice ou o próprio objeto:</p>
 <div class="code">agendamentos.remove(1);
@@ -1480,8 +1547,8 @@ agendamentos.remove(agendamentoLucas);
     </section>
 
     <!-- 39 FOR-EACH -->
-    <section class="topic" id="topic-39">
-      <div class="eyebrow">39 · collections</div>
+    <section class="topic" id="topic-41">
+      <div class="eyebrow">41 · collections</div>
       <h2>for-each</h2>
       <p>Em vez de chamar <code>get(0)</code>, <code>get(1)</code>, <code>get(2)</code> manualmente, o <code>for-each</code> percorre a lista inteira sozinho.</p>
 <div class="code"><span class="c-kw">for</span> (<span class="c-type">Agendamento</span> item : agendamentos) {
@@ -1499,8 +1566,8 @@ agendamentos.remove(agendamentoLucas);
     </section>
 
     <!-- 40 FOREACH+ENUM+IF -->
-    <section class="topic" id="topic-40">
-      <div class="eyebrow">40 · collections</div>
+    <section class="topic" id="topic-42">
+      <div class="eyebrow">42 · collections</div>
       <h2>for-each + enum + if</h2>
       <p>Agora dá pra combinar tudo que já vimos: percorrer a lista, olhar o status de cada agendamento, e agir só nos que interessam.</p>
 <div class="code"><span class="c-kw">for</span> (<span class="c-type">Agendamento</span> item : agendamentos) {
@@ -1513,8 +1580,8 @@ agendamentos.remove(agendamentoLucas);
     </section>
 
     <!-- 41 MESMA REFERENCIA -->
-    <section class="topic" id="topic-41">
-      <div class="eyebrow">41 · collections</div>
+    <section class="topic" id="topic-43">
+      <div class="eyebrow">43 · collections</div>
       <h2>Mesma referência, vários agendamentos</h2>
       <p>Não precisamos criar um objeto <code>Profissional</code> novo pra cada agendamento da Marina — o mesmo objeto pode ser reaproveitado em vários agendamentos diferentes.</p>
 <div class="code"><span class="c-type">Profissional</span> marina = <span class="c-kw">new</span> <span class="c-type">Profissional</span>(<span class="c-str">"Marina"</span>, <span class="c-str">"marina@gmail.com"</span>);
@@ -1532,8 +1599,8 @@ Agendamento Lucas ───────┘
     </section>
 
     <!-- 42 LISTA X BANCO -->
-    <section class="topic" id="topic-42">
-      <div class="eyebrow">42 · collections</div>
+    <section class="topic" id="topic-44">
+      <div class="eyebrow">44 · collections</div>
       <h2>Lista hoje × banco de dados depois</h2>
       <p>Hoje criamos os objetos manualmente e usamos <code>add()</code> pra colocá-los numa lista. Mais adiante, quando o banco de dados entrar em cena, quem vai preencher essa lista será o próprio banco:</p>
 <div class="code"><span class="c-com">// hoje:</span>
@@ -1545,9 +1612,77 @@ agendamentos.add(agendamento);
       <p class="sub">Ainda não estudamos <code>Repository</code> nem JPA — esse exemplo só serve pra mostrar por que aprender <code>List</code> agora continua valendo depois: o formato final (uma lista de objetos <code>Agendamento</code>) é o mesmo, só muda de onde os dados vêm.</p>
     </section>
 
+    <!-- 45 ARRAY X LIST -->
+    <section class="topic" id="topic-45">
+      <div class="eyebrow">45 · collections</div>
+      <h2>Array × List</h2>
+      <p>Agora que conhecemos os dois, dá pra comparar diretamente:</p>
+      <div class="compare">
+        <div class="col">
+          <h4>Array / vetor</h4>
+<div class="code" style="margin:0;"><span class="c-kw">int</span>[] numeros = <span class="c-kw">new</span> <span class="c-kw">int</span>[3];</div>
+          <p class="sub" style="margin-top:10px;">tamanho fixo desde a criação.</p>
+        </div>
+        <div class="col">
+          <h4>List</h4>
+<div class="code" style="margin:0;"><span class="c-type">List</span>&lt;<span class="c-type">Integer</span>&gt; numeros = <span class="c-kw">new</span> <span class="c-type">ArrayList</span>&lt;&gt;();</div>
+          <p class="sub" style="margin-top:10px;">tamanho flexível — cresce com <code>add()</code>.</p>
+        </div>
+      </div>
+      <p class="sub">Repare que a <code>List</code> do exemplo usa <code>Integer</code>, não <code>int</code> — o motivo está na próxima seção.</p>
+    </section>
+
+    <!-- 46 WRAPPER CLASSES -->
+    <section class="topic" id="topic-46">
+      <div class="eyebrow">46 · collections</div>
+      <h2>Wrapper Classes</h2>
+      <p>Todo tipo primitivo do Java tem uma <strong>classe correspondente</strong>, chamada de Wrapper Class — uma versão "embrulhada em objeto" daquele mesmo valor.</p>
+      <div class="breakdown">
+        <div class="breakdown-row"><div class="piece">int</div><div class="expl">→ <code>Integer</code></div></div>
+        <div class="breakdown-row"><div class="piece">double</div><div class="expl">→ <code>Double</code></div></div>
+        <div class="breakdown-row"><div class="piece">boolean</div><div class="expl">→ <code>Boolean</code></div></div>
+        <div class="breakdown-row"><div class="piece">char</div><div class="expl">→ <code>Character</code></div></div>
+        <div class="breakdown-row"><div class="piece">long / float</div><div class="expl">→ <code>Long</code> / <code>Float</code></div></div>
+      </div>
+<div class="code"><span class="c-com">// primitivo:</span>
+<span class="c-kw">int</span> numero = 10;
+
+<span class="c-com">// wrapper:</span>
+<span class="c-type">Integer</span> numero = 10;</div>
+      <div class="note"><b>Por que isso importa:</b> Collections como <code>List</code> só trabalham com objetos, nunca com tipos primitivos. Não existe <code>List&lt;int&gt;</code> — só <code>List&lt;Integer&gt;</code>. É por isso que toda vez que guardamos números numa lista, usamos a versão Wrapper.</p></div>
+    </section>
+
+    <!-- 47 BOXING/UNBOXING -->
+    <section class="topic" id="topic-47">
+      <div class="eyebrow">47 · collections</div>
+      <h2>Boxing, autoboxing e unboxing</h2>
+      <p><strong>Boxing</strong> é transformar um valor primitivo no seu Wrapper correspondente:</p>
+<div class="code"><span class="c-kw">int</span> numero = 10;
+<span class="c-type">Integer</span> numeroObjeto = numero;
+<span class="c-com">// int → Integer</span></div>
+      <p>O Java faz isso sozinho na maioria dos casos — chamamos isso de <strong>autoboxing</strong>:</p>
+<div class="code"><span class="c-type">List</span>&lt;<span class="c-type">Integer</span>&gt; numeros = <span class="c-kw">new</span> <span class="c-type">ArrayList</span>&lt;&gt;();
+numeros.add(10);
+<span class="c-com">// o 10 é um int, mas o Java converte pra Integer sozinho</span></div>
+      <p><strong>Unboxing</strong> é o caminho inverso — voltar de um Wrapper pro tipo primitivo:</p>
+<div class="code"><span class="c-type">Integer</span> numeroObjeto = 10;
+<span class="c-kw">int</span> numero = numeroObjeto;
+<span class="c-com">// Integer → int</span>
+
+<span class="c-com">// o Java também faz isso automaticamente em contas:</span>
+<span class="c-kw">int</span> resultado = numeroObjeto + 5;</div>
+      <div class="flow">
+        <div class="box">int (primitivo)</div>
+        <div class="arrow">→ boxing →</div>
+        <div class="box">Integer (wrapper)</div>
+        <div class="arrow">→ unboxing →</div>
+        <div class="box">int (primitivo)</div>
+      </div>
+    </section>
+
     <!-- 43 OBJECT -->
-    <section class="topic" id="topic-43">
-      <div class="eyebrow">43 · collections</div>
+    <section class="topic" id="topic-48">
+      <div class="eyebrow">48 · collections</div>
       <h2>Introdução a Object</h2>
       <p><code>Object</code> é a classe que fica no topo de toda hierarquia em Java. Quando você escreve <code>public class Servico { }</code>, é como se por baixo dos panos existisse:</p>
 <div class="code"><span class="c-kw">public class</span> <span class="c-type">Servico</span> <span class="c-kw">extends</span> <span class="c-type">Object</span> {
@@ -1566,8 +1701,8 @@ agendamentos.add(agendamento);
     </section>
 
     <!-- 44 ESTRUTURAS DE DADOS -->
-    <section class="topic" id="topic-44">
-      <div class="eyebrow">44 · collections</div>
+    <section class="topic" id="topic-49">
+      <div class="eyebrow">49 · collections</div>
       <h2>Estruturas de dados</h2>
       <p>Estruturas de dados estudam formas de organizar, guardar e acessar informação. A gente já começou, sem perceber, com <code>List</code> e <code>ArrayList</code>.</p>
       <ul class="roadmap">
@@ -1583,19 +1718,19 @@ agendamentos.add(agendamento);
 
     <!-- PARTE PANORAMA -->
     <div class="part-header">
-      <div class="part-num">PARTE 11</div>
+      <div class="part-num">PARTE 12</div>
       <h1>Panorama do projeto</h1>
       <p>Um raio-x honesto de onde o projeto está agora, e tudo que ainda falta percorrer até um sistema completo, publicado e pronto pra mostrar num processo seletivo.</p>
     </div>
 
     <!-- 35 PROGRESSO -->
-    <section class="topic part-open" id="topic-45">
-      <div class="eyebrow">45 · panorama do projeto</div>
+    <section class="topic part-open" id="topic-50">
+      <div class="eyebrow">50 · panorama do projeto</div>
       <h2>Progresso atual</h2>
       <p>Estimativas para acompanhar o avanço — vale atualizar conforme os tópicos forem sendo concluídos de verdade.</p>
       <div class="progressbar">
-        <div class="plabel"><b>Java básico + POO</b><span>≈ 75%</span></div>
-        <div class="track"><div class="fill" style="width:75%"></div></div>
+        <div class="plabel"><b>Java básico + POO</b><span>≈ 77%</span></div>
+        <div class="track"><div class="fill" style="width:77%"></div></div>
       </div>
       <div class="progressbar">
         <div class="plabel"><b>Projeto completo</b><span>≈ 22%</span></div>
@@ -1613,8 +1748,8 @@ agendamentos.add(agendamento);
     </section>
 
     <!-- 46 O QUE FALTA DE JAVA -->
-    <section class="topic" id="topic-46">
-      <div class="eyebrow">46 · panorama do projeto</div>
+    <section class="topic" id="topic-51">
+      <div class="eyebrow">51 · panorama do projeto</div>
       <h2>O que falta de Java para concluir a base</h2>
       <h3>Collections (continuação)</h3>
       <ul class="checklist">
@@ -1624,6 +1759,8 @@ agendamentos.add(agendamento);
         <li>Set / HashSet</li>
         <li>Map / HashMap</li>
         <li>generics básicos</li>
+        <li>ordenação</li>
+        <li>Big O básico</li>
       </ul>
       <h3>Object, static, final e Strings</h3>
       <ul class="checklist">
@@ -1646,8 +1783,8 @@ agendamentos.add(agendamento);
     </section>
 
     <!-- 37 SISTEMA EM MEMORIA -->
-    <section class="topic" id="topic-47">
-      <div class="eyebrow">47 · panorama do projeto</div>
+    <section class="topic" id="topic-52">
+      <div class="eyebrow">52 · panorama do projeto</div>
       <h2>Sistema em memória da barbearia</h2>
       <p>Antes do Spring Boot, a meta é fazer o sistema funcionar inteiro só com Java puro, guardando tudo na memória (sem banco de dados ainda).</p>
       <p class="sub">A parte de guardar vários agendamentos já começou — é exatamente o <code>List&lt;Agendamento&gt;</code> que acabamos de estudar. O que falta agora é organizar isso em cadastros completos, com busca e regras de negócio de verdade.</p>
@@ -1672,8 +1809,8 @@ agendamentos.add(agendamento);
     </section>
 
     <!-- 38 GIT SQL BANCO -->
-    <section class="topic" id="topic-48">
-      <div class="eyebrow">48 · panorama do projeto</div>
+    <section class="topic" id="topic-53">
+      <div class="eyebrow">53 · panorama do projeto</div>
       <h2>Git, SQL e banco de dados</h2>
       <h3>Git e GitHub</h3>
       <ul class="checklist">
@@ -1705,8 +1842,8 @@ agendamento
     </section>
 
     <!-- 39 HTTP REST SPRING -->
-    <section class="topic" id="topic-49">
-      <div class="eyebrow">49 · panorama do projeto</div>
+    <section class="topic" id="topic-54">
+      <div class="eyebrow">54 · panorama do projeto</div>
       <h2>HTTP, REST e Spring Boot</h2>
       <h3>HTTP e REST</h3>
       <ul class="checklist">
@@ -1748,8 +1885,8 @@ DELETE /agendamentos/10</span></div>
     </section>
 
     <!-- 40 TESTES SWAGGER SEGURANCA -->
-    <section class="topic" id="topic-50">
-      <div class="eyebrow">50 · panorama do projeto</div>
+    <section class="topic" id="topic-55">
+      <div class="eyebrow">55 · panorama do projeto</div>
       <h2>Testes, Swagger e Segurança</h2>
       <ul class="checklist">
         <li>teste unitário com JUnit</li>
@@ -1763,8 +1900,8 @@ DELETE /agendamentos/10</span></div>
     </section>
 
     <!-- 41 REACT DOCKER DEPLOY -->
-    <section class="topic" id="topic-51">
-      <div class="eyebrow">51 · panorama do projeto</div>
+    <section class="topic" id="topic-56">
+      <div class="eyebrow">56 · panorama do projeto</div>
       <h2>React, Docker e Deploy</h2>
       <h3>React</h3>
       <ul class="checklist">
@@ -1794,8 +1931,8 @@ DELETE /agendamentos/10</span></div>
     </section>
 
     <!-- 42 ORDEM A PARTIR DE AGORA -->
-    <section class="topic" id="topic-52">
-      <div class="eyebrow">52 · panorama do projeto</div>
+    <section class="topic" id="topic-57">
+      <div class="eyebrow">57 · panorama do projeto</div>
       <h2>A ordem a partir de agora</h2>
       <ul class="roadmap">
         <li><span class="n">▶</span> você está aqui</li>
@@ -1857,6 +1994,10 @@ DELETE /agendamentos/10</span></div>
         <div class="gterm"><dt>for-each</dt><dd>Estrutura de repetição que percorre todos os elementos de uma lista, um de cada vez.</dd></div>
         <div class="gterm"><dt>IndexOutOfBoundsException</dt><dd>Erro que ocorre ao pedir uma posição que não existe dentro de uma lista.</dd></div>
         <div class="gterm"><dt>Object</dt><dd>A classe que fica no topo de toda hierarquia em Java; todas as classes herdam dela, mesmo sem <code>extends</code> explícito.</dd></div>
+        <div class="gterm"><dt>Array / vetor</dt><dd>Uma sequência de posições de tamanho fixo, definida no momento da criação.</dd></div>
+        <div class="gterm"><dt>Matriz</dt><dd>Um array com mais de uma dimensão — na prática, um array de arrays.</dd></div>
+        <div class="gterm"><dt>Wrapper Class</dt><dd>A versão em forma de objeto de um tipo primitivo (ex.: <code>Integer</code> para <code>int</code>), necessária porque Collections só aceitam objetos.</dd></div>
+        <div class="gterm"><dt>Boxing / Unboxing</dt><dd>Converter um primitivo para seu Wrapper (boxing) ou o caminho inverso (unboxing); quando o Java faz isso sozinho, chama-se autoboxing.</dd></div>
       </dl>
     </section>
 
